@@ -1,21 +1,63 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: linear-gradient(
+    135deg,
+    #0f1419 0%,
+    #10151b 11.11%,
+    #11161e 22.22%,
+    #131820 33.33%,
+    #141922 44.44%,
+    #151a24 55.56%,
+    #161b27 66.67%,
+    #171d29 77.78%,
+    #191e2c 88.89%,
+    #1a1f2e 100%
+  );
+  --foreground: rgba(26, 31, 46, 0.8);
+  --inputBg: rgba(38, 38, 38, 0.3);
+  --text: #99a1af;
+  --buttonBg: linear-gradient(90deg, #00c950 0%, #096 100%);
+  --colorAccess: #00c950;
+  --colorError: #fb2c36;
+  --borderColor: #2a2f3e;
+  --borderError:#82181a;
+
+
 }
 
 @theme inline {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: linear-gradient(
+      135deg,
+      #0f1419 0%,
+      #10151b 11.11%,
+      #11161e 22.22%,
+      #131820 33.33%,
+      #141922 44.44%,
+      #151a24 55.56%,
+      #161b27 66.67%,
+      #171d29 77.78%,
+      #191e2c 88.89%,
+      #1a1f2e 100%
+    );
+    --foreground: rgba(26, 31, 46, 0.8);
+    --inputBg: rgba(38, 38, 38, 0.3);
+    --text: #99a1af;
+    --buttonBg: linear-gradient(90deg, #00c950 0%, #096 100%);
+    --colorAccess: #00c950;
+    --colorError: #fb2c36;
+    --borderColor: #2a2f3e;
+    --borderError:#82181a;
+    --placeholderColor: #a1a1a1;
+    --secondaryText: #d1d5dc;
+    --colorSmallText:#6a7282;
   }
 }
 
@@ -23,4 +65,5 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  color:white;
 }
