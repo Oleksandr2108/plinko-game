@@ -7,4 +7,9 @@ export const GAME_CONFIG = {
   bet: { min: 0.1, max: 1000, default: 1 },
 } as const;
 
+export const API_BASE_URL =
+  process.env.API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "https://plinko-be-stanish.fly.dev/api/v1";
+
 export type RiskLevel = (typeof GAME_CONFIG.risk.levels)[number];

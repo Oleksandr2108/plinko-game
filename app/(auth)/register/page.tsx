@@ -1,8 +1,22 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import LoginForm from "@/features/auth/login/ui/LoginForm";
+import { useRegister } from "@/features/auth/register/model/register";
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const registerMutation = useRegister({
+    onSuccess: () => {
+      router.push("/");
+    },
+    onError: (messages) => {
+      setError(messages.join(" "));
+    },
+  });
+
   return (
     <main className="w-full max-w-md">
       <LoginForm
@@ -11,9 +25,12 @@ export default function RegisterPage() {
         btnText="Create Account"
         accaunt={false}
         textAccaunt="Already have an account?"
-        onSubmit={(data: { email: string; password: string }) =>
-          console.log(data)
-        }
+        error={error}
+        isPending={registerMutation.isPending}
+        onSubmit={async (data) => {
+          setError("");
+          await registerMutation.mutateAsync(data);
+        }}
       />
       <p className="text-[14px] text-(--colorSmallText) mt-6 text-center">
         {" "}

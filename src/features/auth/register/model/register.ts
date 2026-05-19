@@ -4,12 +4,12 @@ import { useUserStore } from "@/entities/user";
 import type {
   AuthCredentials,
   AuthErrorResponse,
-  LoginResponse,
+  RegisterResponse,
 } from "@/entities/auth/model/types";
 import { authApi } from "@/features/auth/api/authApi";
 import { setCookie } from "@/shared/lib";
 
-export type LoginDto = AuthCredentials;
+export type RegisterDto = AuthCredentials;
 
 const persistTokens = (accessToken: string, refreshToken: string) => {
   setCookie("accessToken", accessToken);
@@ -29,26 +29,26 @@ const extractMessages = (error: unknown) => {
     }
   }
 
-  return ["Unable to sign in. Please try again."];
+  return ["Unable to create account. Please try again."];
 };
 
-export async function login(dto: LoginDto) {
-  const data = await authApi.login(dto);
+export async function register(dto: RegisterDto) {
+  const data = await authApi.register(dto);
   persistTokens(data.accessToken, data.refreshToken);
-  useUserStore.getState().setUser(null);
+  useUserStore.getState().setUser({ ...data.user, balance: 0 });
   return data;
 }
 
-interface UseLoginOptions {
-  onSuccess?: (data: LoginResponse) => void;
+interface UseRegisterOptions {
+  onSuccess?: (data: RegisterResponse) => void;
   onError?: (messages: string[]) => void;
 }
 
-export function useLogin(options: UseLoginOptions = {}) {
+export function useRegister(options: UseRegisterOptions = {}) {
   const { onSuccess, onError } = options;
 
-  return useMutation<LoginResponse, unknown, LoginDto>({
-    mutationFn: login,
+  return useMutation<RegisterResponse, unknown, RegisterDto>({
+    mutationFn: register,
     onSuccess: (data) => {
       onSuccess?.(data);
     },

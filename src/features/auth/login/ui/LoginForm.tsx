@@ -1,8 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { login } from "../model/login";
 
 interface LoginData {
   subtitle: string;
@@ -10,31 +8,32 @@ interface LoginData {
   btnText: string;
   accaunt: boolean;
   textAccaunt: string;
-  onSubmit?: (data: { email: string; password: string }) => void;
+  error?: string;
+  isPending?: boolean;
+  onSubmit: (data: { email: string; password: string }) => Promise<void> | void;
 }
 
 const LoginForm = (props: LoginData) => {
-  const router = useRouter();
-  const [error, setError] = useState("");
+  const [localError, setLocalError] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setLocalError("");
+
     const fd = new FormData(e.currentTarget);
     const data = {
       email: fd.get("email") as string,
       password: fd.get("password") as string,
     };
+
     try {
-      if (props.onSubmit) {
-        props.onSubmit(data);
-      } else {
-        await login(data);
-        router.push("/");
-      }
+      await props.onSubmit(data);
     } catch {
-      setError("Invalid credentials");
+      setLocalError("Request failed. Please try again.");
     }
   }
+
+  const errorMessage = props.error ?? localError;
 
   return (
     <div className="w-full  m-auto bg-(--foreground) border border-(--borderColor) rounded-2xl p-8">
@@ -88,13 +87,17 @@ const LoginForm = (props: LoginData) => {
             {props.tip}
           </p>
         ) : null}
+        {errorMessage ? (
+          <p className="text-[12px] text-red-400 mt-3">{errorMessage}</p>
+        ) : null}
 
         <button
           type="submit"
+          disabled={props.isPending}
           className="bg-(--buttonBg) text-white text-[14px] font-medium rounded-lg w-full py-3 mt-4 cursor-pointer"
           style={{ background: "var(--buttonBg)" }}
         >
-          {props.btnText}
+          {props.isPending ? "Please wait..." : props.btnText}
         </button>
       </form>
       <span className="text-[14px] text-(--secondaryText) mt-4 block text-center">
