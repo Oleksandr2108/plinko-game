@@ -33,3 +33,23 @@ export const deleteCookie = (name: string) => {
 
   document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax`;
 };
+
+const MINIMAL_UNITS_PER_CREDIT = 1_000_000;
+
+export const fromMinimalUnits = (value: string | number) => {
+  const numericValue = typeof value === "number" ? value : Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return 0;
+  }
+
+  return numericValue / MINIMAL_UNITS_PER_CREDIT;
+};
+
+export const toMinimalUnits = (value: number) => {
+  if (!Number.isFinite(value)) {
+    return "0";
+  }
+
+  return String(Math.round(value * MINIMAL_UNITS_PER_CREDIT));
+};

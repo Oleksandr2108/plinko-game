@@ -4,7 +4,7 @@ export const GAME_CONFIG = {
     levels: ["low", "medium", "high"] as const,
     default: "medium" as const,
   },
-  bet: { min: 0.1, max: 1000, default: 1 },
+  bet: { min: 0.1, max: 1_000_000, default: 1 },
 } as const;
 
 export const API_BASE_URL =

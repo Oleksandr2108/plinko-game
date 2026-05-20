@@ -1,1 +1,1 @@
-export type { Bet } from "./model/types";
+export type { Bet, BetList, BetSeedRef } from "./model/types";

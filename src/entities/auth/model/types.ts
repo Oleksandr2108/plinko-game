@@ -8,6 +8,11 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
+export interface TokensResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export interface RegisterResponse extends LoginResponse {
   user: {
     id: string;

@@ -4,4 +4,6 @@ export interface Ball {
   multiplier: number;
   betAmount: number;
   payout: number;
+  path: string;
+  rows: number;
 }

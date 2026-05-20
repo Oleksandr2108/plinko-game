@@ -1,9 +1,26 @@
-import type { RiskLevel } from "@/shared/config";
+import type { ApiRiskLevel } from "@/entities/game";
+
+export interface BetSeedRef {
+  serverSeedHash: string;
+  clientSeed: string;
+  nonce: number;
+}
 
 export interface Bet {
-  id: string;
+  betId: string;
   amount: number;
-  riskLevel: RiskLevel;
   rows: number;
-  status: "pending" | "settled";
+  risk: ApiRiskLevel;
+  path: string;
+  bucketIndex: number;
+  multiplier: number;
+  payout: number;
+  balanceAfter: number;
+  seed?: BetSeedRef;
+  createdAt?: string;
+}
+
+export interface BetList {
+  items: Bet[];
+  nextCursor: string | null;
 }
