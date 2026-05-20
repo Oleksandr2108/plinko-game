@@ -51,19 +51,6 @@ const buildBetInput = () => ({
   risk: useSelectRiskStore.getState().risk,
 });
 
-const syncBalanceAfterBet = (balanceAfter: number) => {
-  const currentUser = useUserStore.getState().user;
-
-  if (!currentUser) {
-    return;
-  }
-
-  useUserStore.getState().setUser({
-    ...currentUser,
-    balance: balanceAfter,
-  });
-};
-
 const applyBetResult = (bet: {
   betId: string;
   bucketIndex: number;
@@ -74,8 +61,9 @@ const applyBetResult = (bet: {
   rows: number;
   balanceAfter: number;
 }) => {
-  useDropBallStore.getState().addResult(mapBetToBall(bet));
-  syncBalanceAfterBet(bet.balanceAfter);
+  useDropBallStore
+    .getState()
+    .enqueueResult(mapBetToBall(bet), bet.balanceAfter);
 };
 
 interface UseBetPanelResult {
@@ -95,6 +83,7 @@ interface UseBetPanelResult {
 export function useBetPanel(): UseBetPanelResult {
   const queryClient = useQueryClient();
   const setUser = useUserStore((state) => state.setUser);
+  const isDropping = useDropBallStore((state) => state.isDropping);
 
   const gameConfigQuery = useQuery({
     queryKey: PLINKO_QUERY_KEYS.gameConfig,
@@ -113,10 +102,10 @@ export function useBetPanel(): UseBetPanelResult {
   });
 
   useEffect(() => {
-    if (currentUserQuery.data) {
+    if (currentUserQuery.data && !isDropping) {
       setUser(currentUserQuery.data);
     }
-  }, [currentUserQuery.data, setUser]);
+  }, [currentUserQuery.data, isDropping, setUser]);
 
   useEffect(() => {
     if (!gameConfigQuery.data) {
@@ -159,8 +148,10 @@ export function useBetPanel(): UseBetPanelResult {
     onSuccess: (bet) => {
       applyBetResult(bet);
     },
-    onSettled: async () => {
+    onError: () => {
       useDropBallStore.getState().setIsDropping(false);
+    },
+    onSettled: async () => {
       await finalizeBetFlow();
     },
   });
@@ -193,8 +184,10 @@ export function useBetPanel(): UseBetPanelResult {
 
       return bets;
     },
-    onSettled: async () => {
+    onError: () => {
       useDropBallStore.getState().setIsDropping(false);
+    },
+    onSettled: async () => {
       await finalizeBetFlow();
     },
   });

@@ -7,10 +7,12 @@ export function AnimatedBall({
   rows,
   path,
   slotIndex,
+  onComplete,
 }: {
   rows: number;
   path: string;
   slotIndex?: number;
+  onComplete?: () => void;
 }) {
   const frames = useMemo(
     () => getBallKeyframes(rows, path, slotIndex),
@@ -40,6 +42,24 @@ export function AnimatedBall({
       window.clearInterval(intervalId);
     };
   }, [frames]);
+
+  useEffect(() => {
+    if (!onComplete || frames.length === 0) {
+      return;
+    }
+
+    if (frameIndex !== frames.length - 1) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      onComplete();
+    }, BALL_STEP_MS);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [frameIndex, frames.length, onComplete]);
 
   if (!activeFrame) {
     return null;

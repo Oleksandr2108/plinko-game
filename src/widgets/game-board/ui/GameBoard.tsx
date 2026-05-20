@@ -23,7 +23,11 @@ const riskToApiMap = {
 export function GameBoard() {
   const rows = useSelectRiskStore((state) => state.rows);
   const risk = useSelectRiskStore((state) => state.risk);
-  const latestBall = useDropBallStore((state) => state.history[0]);
+  const activeDrop = useDropBallStore((state) => state.activeDrop);
+  const settledSlotIndex = useDropBallStore((state) => state.settledSlotIndex);
+  const completeActiveDrop = useDropBallStore(
+    (state) => state.completeActiveDrop,
+  );
   const gameConfigQuery = useQuery({
     queryKey: PLINKO_QUERY_KEYS.gameConfig,
     queryFn: plinkoApi.getGameConfig,
@@ -54,7 +58,7 @@ export function GameBoard() {
           >
             <svg
               viewBox={`0 0 ${boardMetrics.width} ${boardMetrics.height}`}
-              className="block h-auto w-full overflow-visible"
+              className="pointer-events-none block h-auto w-full overflow-visible"
               preserveAspectRatio="xMidYMin meet"
               role="presentation"
             >
@@ -67,16 +71,19 @@ export function GameBoard() {
                 slotCenters={slotCenters}
                 slotY={boardMetrics.slotY}
                 winningSlotIndex={
-                  latestBall?.rows === rows ? latestBall.slotIndex : undefined
+                  activeDrop?.ball.rows === rows
+                    ? undefined
+                    : (settledSlotIndex ?? undefined)
                 }
               />
 
-              {latestBall?.rows === rows ? (
+              {activeDrop?.ball.rows === rows ? (
                 <AnimatedBall
-                  key={latestBall.id}
+                  key={activeDrop.ball.id}
                   rows={rows}
-                  path={latestBall.path}
-                  slotIndex={latestBall.slotIndex}
+                  path={activeDrop.ball.path}
+                  slotIndex={activeDrop.ball.slotIndex}
+                  onComplete={completeActiveDrop}
                 />
               ) : null}
             </svg>
