@@ -8,6 +8,7 @@ export const BALL_STEP_MS = 140;
 export const PEG_APPROACH_Y = 10;
 export const PEG_HOP_X = 16;
 export const PEG_HOP_Y = 8;
+export const SLOT_LANDING_OFFSET = 10;
 
 export interface BoardMetrics {
   width: number;
@@ -144,7 +145,7 @@ export const getBallKeyframes = (
       typeof slotIndex === "number"
         ? getSlotCenterX(rows, slotIndex)
         : width / 2 + offset * (SLOT_SPACING / 2),
-    y: slotY + SLOT_HEIGHT / 2,
+    y: slotY - SLOT_LANDING_OFFSET,
   });
 
   return points;
