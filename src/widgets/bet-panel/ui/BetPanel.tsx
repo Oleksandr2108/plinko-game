@@ -6,15 +6,11 @@ import { DropBallButton } from "@/features/drop-ball";
 import { PlaceBetForm } from "@/features/place-bet";
 import { RiskSelector, RowsSlider } from "@/features/select-risk";
 import { useBetPanel } from "../model/useBetPanel";
-import Image from "next/image";
-
-import IconFullScreen from "../../../../public/icons/fullScreenIcon.svg";
-import IconSettings from "../../../../public/icons/settingIcon.svg";
+import { BetPanelFooter } from "./BetPanelFooter";
 
 export function BetPanel() {
   const mode = useBetModeStore((state) => state.mode);
   const {
-    activeSeed,
     errorMessage,
     gameConfig,
     isLoading,
@@ -57,16 +53,7 @@ export function BetPanel() {
           />
         )}
       </div>
-      <div className="-mx-4 flex h-16 w-[calc(100%+2rem)] items-center justify-between border-t border-(--borderColor) px-4 py-6">
-        <Image
-          src={IconFullScreen}
-          alt="Full Screen"
-        />
-        <Image
-          src={IconSettings}
-          alt="Settings"
-        />
-      </div>
+      <BetPanelFooter />
     </aside>
   );
 }
