@@ -12,12 +12,14 @@ export function RowsSlider({
 }) {
   const rows = useSelectRiskStore((state) => state.rows);
   const setRows = useSelectRiskStore((state) => state.setRows);
+  const progress =
+    maxRows === minRows ? 100 : ((rows - minRows) / (maxRows - minRows)) * 100;
 
   return (
-    <div className="space-y-3 border-b border-(--borderColor) pb-4">
+    <div className="space-y-3  ">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-white">Rows</p>
-        <span className="rounded-xl border border-(--borderColor) bg-[#11161f] px-3 py-1 text-lg font-semibold text-(--colorAccess)">
+        <p className="font-medium text-(--secondaryText) text-[14px]">Rows</p>
+        <span className="flex h-7.5 w-10 items-center justify-center rounded-[10px] border border-(--borderColor) bg-(--bgTab) font-bold text-(--colorAccess)">
           {rows}
         </span>
       </div>
@@ -27,12 +29,16 @@ export function RowsSlider({
         max={maxRows}
         value={rows}
         onChange={(event) => setRows(Number(event.target.value))}
-        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-[#2b2b26] accent-(--colorAccess)"
+        className="plinko-range h-5 w-full cursor-pointer appearance-none bg-transparent"
+        style={{
+          ["--range-progress" as string]: `${progress}%`,
+        }}
       />
       <div className="flex justify-between text-sm text-(--text)">
         <span>{minRows}</span>
         <span>{maxRows}</span>
       </div>
+      
     </div>
   );
 }

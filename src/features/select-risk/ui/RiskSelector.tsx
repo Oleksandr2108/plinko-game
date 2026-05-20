@@ -11,10 +11,16 @@ export function RiskSelector({ levels }: { levels?: RiskLevel[] }) {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm font-medium text-white">Risk</p>
+      <p className="font-medium text-(--secondaryText) text-[14px]">Risk</p>
       <div className="grid grid-cols-3 gap-2">
         {riskLevels.map((level) => {
           const active = risk === level;
+          const activeClass =
+            level === "low"
+              ? "border-(--colorAccess) bg-(--bgAccess) text-(--colorAccess)"
+              : level === "medium"
+                ? "border-(--colorMedium) bg-(--bgMedium) text-(--colorMedium)"
+                : "border-(--colorError) bg-(--bgError) text-(--colorError)";
 
           return (
             <button
@@ -22,10 +28,10 @@ export function RiskSelector({ levels }: { levels?: RiskLevel[] }) {
               type="button"
               onClick={() => setRisk(level)}
               className={[
-                "rounded-xl border px-3 py-3 text-sm font-semibold uppercase transition-colors",
+                "cursor-pointer rounded-[10px] border flex items-center justify-center py-2 font-medium uppercase transition-colors",
                 active
-                  ? "border-(--colorAccess) bg-[rgba(0,201,80,0.12)] text-(--colorAccess)"
-                  : "border-(--borderColor) bg-(--inputBg) text-(--secondaryText)",
+                  ? activeClass
+                  : "border-(--borderColor) bg-(--bgTab) text-(--text)",
               ].join(" ")}
             >
               {level}

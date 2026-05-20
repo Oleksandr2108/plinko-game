@@ -3,6 +3,25 @@
 import { useUserStore } from "@/entities/user";
 import { usePlaceBetStore } from "../model/store";
 
+interface BetAmountActionsButtonsProps {
+  onClick: () => void;
+  label: string;
+}
+export function BetAmountActionsButtons({
+  onClick,
+  label,
+}: BetAmountActionsButtonsProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="cursor-pointer rounded-xl border border-(--borderTab) bg-(--bgTabActive) px-3 py-2 text-sm font-semibold text-(--secondaryText)"
+    >
+      {label}
+    </button>
+  );
+}
+
 export function BetAmountActions() {
   const halveAmount = usePlaceBetStore((state) => state.halveAmount);
   const doubleAmount = usePlaceBetStore((state) => state.doubleAmount);
@@ -11,27 +30,18 @@ export function BetAmountActions() {
 
   return (
     <div className="grid grid-cols-3 gap-2">
-      <button
-        type="button"
+      <BetAmountActionsButtons
         onClick={halveAmount}
-        className="rounded-xl border border-(--borderColor) bg-(--inputBg) px-3 py-2 text-sm font-semibold text-(--secondaryText)"
-      >
-        1/2
-      </button>
-      <button
-        type="button"
+        label="1/2"
+      />
+      <BetAmountActionsButtons
         onClick={doubleAmount}
-        className="rounded-xl border border-(--borderColor) bg-(--inputBg) px-3 py-2 text-sm font-semibold text-(--secondaryText)"
-      >
-        2X
-      </button>
-      <button
-        type="button"
+        label="2X"
+      />
+      <BetAmountActionsButtons
         onClick={() => setMaxAmount(balance)}
-        className="rounded-xl border border-(--borderColor) bg-(--inputBg) px-3 py-2 text-sm font-semibold text-(--secondaryText)"
-      >
-        MAX
-      </button>
+        label="MAX"
+      />
     </div>
   );
 }

@@ -1,2 +1,1 @@
-// Generic UI kit: Button, Input, Modal, etc.
-export {};
+export { Button } from "./button";

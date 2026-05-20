@@ -78,7 +78,21 @@ const applyBetResult = (bet: {
   syncBalanceAfterBet(bet.balanceAfter);
 };
 
-export function useBetPanel() {
+interface UseBetPanelResult {
+  gameConfig: typeof plinkoApi extends { getGameConfig: () => Promise<infer T> }
+    ? T | undefined
+    : never;
+  activeSeed: typeof plinkoApi extends { getActiveSeed: () => Promise<infer T> }
+    ? T | undefined
+    : never;
+  isLoading: boolean;
+  isSubmitting: boolean;
+  errorMessage: string | undefined;
+  placeManualBet: () => Promise<void>;
+  startAutoBet: () => Promise<void>;
+}
+
+export function useBetPanel(): UseBetPanelResult {
   const queryClient = useQueryClient();
   const setUser = useUserStore((state) => state.setUser);
 
@@ -212,7 +226,11 @@ export function useBetPanel() {
       activeSeedQuery.isLoading,
     isSubmitting: manualBetMutation.isPending || autoBetMutation.isPending,
     errorMessage,
-    placeManualBet: () => manualBetMutation.mutateAsync(),
-    startAutoBet: () => autoBetMutation.mutateAsync(),
+    placeManualBet: async () => {
+      await manualBetMutation.mutateAsync();
+    },
+    startAutoBet: async () => {
+      await autoBetMutation.mutateAsync();
+    },
   };
 }

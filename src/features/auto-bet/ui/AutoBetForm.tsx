@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/shared/ui";
 import { useAutoBetStore } from "../model/store";
 
 function Field({
@@ -17,14 +18,17 @@ function Field({
 }) {
   return (
     <label className="space-y-2">
-      <span className="block text-sm font-medium text-white">{label}</span>
+      <span className="block text-[14px] font-medium text-(--secondaryText)">
+        {label}
+      </span>
       <input
-        type="number"
+        type="text"
+        inputMode="decimal"
         min={min}
         step={step}
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="w-full rounded-xl border border-(--borderColor) bg-(--inputBg) px-4 py-3 text-white outline-none"
+        className="w-full rounded-lg border border-(--borderColor) bg-(--inputBg) px-4 py-2 text-white outline-none"
       />
     </label>
   );
@@ -45,14 +49,14 @@ export function AutoBetForm({
   const setStopOnLoss = useAutoBetStore((state) => state.setStopOnLoss);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-4 border-t  border-(--borderColor)">
       <Field
         label="Number of Bets"
         value={numberOfBets}
         onChange={setNumberOfBets}
         min={1}
       />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 mt-4">
         <Field
           label="Stop on Profit"
           value={stopOnProfit}
@@ -66,15 +70,12 @@ export function AutoBetForm({
           step={0.01}
         />
       </div>
-      <button
-        type="button"
+      <Button
         onClick={onStart}
         disabled={isPending}
-        className="w-full rounded-xl px-4 py-3 text-lg font-semibold text-white"
-        style={{ background: "var(--buttonBg)" }}
       >
         {isPending ? "Running..." : "Start Auto"}
-      </button>
+      </Button>
     </div>
   );
 }

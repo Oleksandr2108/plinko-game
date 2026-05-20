@@ -9,7 +9,7 @@ export function BetModeTabs() {
   const setMode = useBetModeStore((state) => state.setMode);
 
   return (
-    <div className="grid grid-cols-2 gap-1 rounded-2xl border border-(--borderColor) bg-[#11161f] p-1">
+    <div className="grid grid-cols-2 gap-1 rounded-[14px]  bg-(--bgTab) p-1 h-9">
       {tabs.map((tab) => {
         const active = mode === tab;
 
@@ -19,10 +19,10 @@ export function BetModeTabs() {
             type="button"
             onClick={() => setMode(tab)}
             className={[
-              "rounded-xl px-4 py-2 text-sm font-medium capitalize transition-colors",
+              "rounded-[14px] text-[14px] flex items-center justify-center font-medium capitalize transition-colors cursor-pointer",
               active
-                ? "border border-(--borderColor) bg-[#1a2030] text-white"
-                : "text-(--text)",
+                ? "border border-(--borderColor) bg-(--bgTabActive) text-(--activeTabText)  "
+                : "text-(--placeholderColor) ",
             ].join(" ")}
           >
             {tab}
