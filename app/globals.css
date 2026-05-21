@@ -35,6 +35,7 @@
   --bgTabActive: hsla(0, 0%, 15%, 0.3);
   --inputText: #a1a1a1;
   --inputBg: rgba(38, 38, 38, 0.3);
+  --bgSecondaryTab:#1a1f2e;
 }
 
 @theme inline {

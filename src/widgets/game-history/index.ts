@@ -1,1 +1,2 @@
-export { GameHistory } from "./ui/GameHistory";
+
+export { BetHistoryPage } from "./ui/BetHistoryPage";
