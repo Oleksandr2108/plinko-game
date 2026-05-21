@@ -47,8 +47,8 @@ export function GameBoard() {
   const pinRows = useMemo(() => buildPinRows(rows), [rows]);
 
   return (
-    <section className="flex min-h-screen flex-1 flex-col  bg-[radial-gradient(circle_at_top,rgba(30,38,56,0.45),rgba(15,20,25,0)_40%),rgba(17,22,30,0.94)] px-6 py-10 lg:px-10">
-      <div className="mx-auto flex w-full flex-1 flex-col justify-center">
+    <section className="flex min-h-0 flex-1 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(30,38,56,0.45),rgba(15,20,25,0)_40%),rgba(17,22,30,0.94)] px-6 lg:px-10">
+      <div className="mx-auto flex w-full flex-1 flex-col justify-center overflow-hidden">
         <div className="mx-auto w-full max-w-6xl">
           <div
             className="relative mx-auto w-full"
