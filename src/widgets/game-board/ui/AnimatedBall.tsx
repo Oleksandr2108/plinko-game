@@ -7,11 +7,13 @@ export function AnimatedBall({
   rows,
   path,
   slotIndex,
+  enabled = true,
   onComplete,
 }: {
   rows: number;
   path: string;
   slotIndex?: number;
+  enabled?: boolean;
   onComplete?: () => void;
 }) {
   const frames = useMemo(
@@ -19,11 +21,16 @@ export function AnimatedBall({
     [path, rows, slotIndex],
   );
   const [frameIndex, setFrameIndex] = useState(0);
+
+  useEffect(() => {
+    setFrameIndex(enabled ? 0 : Math.max(frames.length - 1, 0));
+  }, [enabled, frames.length, path, rows, slotIndex]);
+
   const activeFrame =
     frames[Math.min(frameIndex, Math.max(frames.length - 1, 0))];
 
   useEffect(() => {
-    if (frames.length === 0) {
+    if (frames.length === 0 || !enabled) {
       return;
     }
 
@@ -41,11 +48,21 @@ export function AnimatedBall({
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [frames]);
+  }, [enabled, frames]);
 
   useEffect(() => {
     if (!onComplete || frames.length === 0) {
       return;
+    }
+
+    if (!enabled) {
+      const timeoutId = window.setTimeout(() => {
+        onComplete();
+      }, 0);
+
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
     }
 
     if (frameIndex !== frames.length - 1) {
@@ -59,7 +76,7 @@ export function AnimatedBall({
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [frameIndex, frames.length, onComplete]);
+  }, [enabled, frameIndex, frames.length, onComplete]);
 
   if (!activeFrame) {
     return null;
@@ -73,7 +90,9 @@ export function AnimatedBall({
       fill="#f8fafc"
       className="drop-shadow-[0_0_12px_rgba(255,255,255,0.65)]"
       style={{
-        transition: `cx ${BALL_STEP_MS}ms linear, cy ${BALL_STEP_MS}ms linear`,
+        transition: enabled
+          ? `cx ${BALL_STEP_MS}ms linear, cy ${BALL_STEP_MS}ms linear`
+          : "none",
       }}
     />
   );

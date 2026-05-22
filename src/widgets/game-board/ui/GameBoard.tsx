@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDropBallStore } from "@/features/drop-ball";
+import { useGameSettingsStore } from "@/features/game-settings";
 import { useSelectRiskStore } from "@/features/select-risk";
 import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
 import { AnimatedBall } from "./AnimatedBall";
@@ -27,6 +28,9 @@ export function GameBoard() {
   const settledSlotIndex = useDropBallStore((state) => state.settledSlotIndex);
   const completeActiveDrop = useDropBallStore(
     (state) => state.completeActiveDrop,
+  );
+  const animationsEnabled = useGameSettingsStore(
+    (state) => state.animationsEnabled,
   );
   const gameConfigQuery = useQuery({
     queryKey: PLINKO_QUERY_KEYS.gameConfig,
@@ -83,6 +87,7 @@ export function GameBoard() {
                   rows={rows}
                   path={activeDrop.ball.path}
                   slotIndex={activeDrop.ball.slotIndex}
+                  enabled={animationsEnabled}
                   onComplete={completeActiveDrop}
                 />
               ) : null}
