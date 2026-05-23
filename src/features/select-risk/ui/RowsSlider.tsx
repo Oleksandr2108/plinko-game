@@ -6,9 +6,11 @@ import { useSelectRiskStore } from "../model/store";
 export function RowsSlider({
   minRows = GAME_CONFIG.rows.min,
   maxRows = GAME_CONFIG.rows.max,
+  disabled = false,
 }: {
   minRows?: number;
   maxRows?: number;
+  disabled?: boolean;
 }) {
   const rows = useSelectRiskStore((state) => state.rows);
   const setRows = useSelectRiskStore((state) => state.setRows);
@@ -28,8 +30,9 @@ export function RowsSlider({
         min={minRows}
         max={maxRows}
         value={rows}
+        disabled={disabled}
         onChange={(event) => setRows(Number(event.target.value))}
-        className="plinko-range h-5 w-full cursor-pointer appearance-none bg-transparent"
+        className="plinko-range h-5 w-full appearance-none bg-transparent disabled:cursor-not-allowed disabled:opacity-60"
         style={{
           ["--range-progress" as string]: `${progress}%`,
         }}
@@ -38,7 +41,6 @@ export function RowsSlider({
         <span>{minRows}</span>
         <span>{maxRows}</span>
       </div>
-      
     </div>
   );
 }

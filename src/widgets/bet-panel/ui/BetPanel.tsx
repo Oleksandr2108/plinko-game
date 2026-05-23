@@ -2,7 +2,7 @@
 
 import { AutoBetForm } from "@/features/auto-bet";
 import { BetModeTabs, useBetModeStore } from "@/features/bet-mode";
-import { DropBallButton } from "@/features/drop-ball";
+import { DropBallButton, useDropBallStore } from "@/features/drop-ball";
 import { PlaceBetForm } from "@/features/place-bet";
 import { RiskSelector, RowsSlider } from "@/features/select-risk";
 import { useBetPanel } from "../model/useBetPanel";
@@ -10,6 +10,7 @@ import { BetPanelFooter } from "./BetPanelFooter";
 
 export function BetPanel() {
   const mode = useBetModeStore((state) => state.mode);
+  const isDropping = useDropBallStore((state) => state.isDropping);
   const {
     errorMessage,
     gameConfig,
@@ -34,10 +35,14 @@ export function BetPanel() {
           <p className="text-sm text-(--text)">Loading bet panel...</p>
         ) : null}
         <PlaceBetForm />
-        <RiskSelector levels={riskLevels} />
+        <RiskSelector
+          levels={riskLevels}
+          disabled={isDropping}
+        />
         <RowsSlider
           minRows={minRows}
           maxRows={maxRows}
+          disabled={isDropping}
         />
         {errorMessage ? (
           <p className="text-sm text-(--colorError)">{errorMessage}</p>

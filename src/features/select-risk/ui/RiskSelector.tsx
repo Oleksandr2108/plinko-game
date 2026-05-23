@@ -4,7 +4,13 @@ import { GAME_CONFIG } from "@/shared/config";
 import type { RiskLevel } from "@/shared/config";
 import { useSelectRiskStore } from "../model/store";
 
-export function RiskSelector({ levels }: { levels?: RiskLevel[] }) {
+export function RiskSelector({
+  levels,
+  disabled = false,
+}: {
+  levels?: RiskLevel[];
+  disabled?: boolean;
+}) {
   const risk = useSelectRiskStore((state) => state.risk);
   const setRisk = useSelectRiskStore((state) => state.setRisk);
   const riskLevels = levels ?? GAME_CONFIG.risk.levels;
@@ -26,9 +32,11 @@ export function RiskSelector({ levels }: { levels?: RiskLevel[] }) {
             <button
               key={level}
               type="button"
+              disabled={disabled}
               onClick={() => setRisk(level)}
               className={[
-                "cursor-pointer rounded-[10px] border flex items-center justify-center py-2 font-medium uppercase transition-colors",
+                "rounded-[10px] border flex items-center justify-center py-2 font-medium uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-60",
+                disabled ? "cursor-not-allowed" : "cursor-pointer",
                 active
                   ? activeClass
                   : "border-(--borderColor) bg-(--bgTab) text-(--text)",
