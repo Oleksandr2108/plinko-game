@@ -18,8 +18,7 @@ const getAudioContext = () => {
   }
 
   const AudioContextConstructor =
-    window.AudioContext ??
-    (window as WindowWithWebkitAudio).webkitAudioContext;
+    window.AudioContext ?? (window as WindowWithWebkitAudio).webkitAudioContext;
 
   if (!AudioContextConstructor) {
     return null;

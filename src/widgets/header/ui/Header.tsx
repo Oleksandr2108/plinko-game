@@ -1,6 +1,7 @@
 'use client'
 import Image from "next/image";
 import BetIcon from "../../../../public/icons/betIcon.svg";
+import { LogoutButton } from "@/features/auth/logout";
 import { useUserStore } from "@/entities/user/model/store";
 import Link from "next/link";
 import HistoryIcon from "../../../../public/icons/historyIcon.svg";
@@ -29,13 +30,16 @@ export function Header() {
           </span>
         </div>
       </div>
-      <Link href="/history" className="flex items-center gap-2 rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] px-4 py-3 text-[16px] font-medium text-(--secondaryText) transition-colors hover:bg-(--bgTabActive)">
-        <Image
-          src={HistoryIcon}
-          alt="History Icon"
-        />
-        History
-      </Link>
+      <div className="flex items-center gap-3">
+        <Link href="/history" className="flex items-center gap-2 rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] px-4 py-3 text-[16px] font-medium text-(--secondaryText) transition-colors hover:bg-(--bgTabActive)">
+          <Image
+            src={HistoryIcon}
+            alt="History Icon"
+          />
+          History
+        </Link>
+        <LogoutButton />
+      </div>
     </header>
   );
 }

@@ -32,7 +32,11 @@ export function AnimatedBall({
   const lastTickFrameIndexRef = useRef<number | null>(null);
   const hasPlayedProfitSoundRef = useRef(false);
   const pegContactFrames = useMemo(
-    () => Array.from({ length: Math.min(rows, path.length) }, (_, index) => 2 + index * 3),
+    () =>
+      Array.from(
+        { length: Math.min(rows, path.length) },
+        (_, index) => 2 + index * 3,
+      ),
     [path.length, rows],
   );
   const hasStarted = !enabled || delayMs === 0 || hasDelayElapsed;
@@ -140,7 +144,14 @@ export function AnimatedBall({
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [enabled, frameIndex, frames.length, hasStarted, onComplete, soundEnabled]);
+  }, [
+    enabled,
+    frameIndex,
+    frames.length,
+    hasStarted,
+    onComplete,
+    soundEnabled,
+  ]);
 
   if (!activeFrame || (enabled && !hasStarted)) {
     return null;

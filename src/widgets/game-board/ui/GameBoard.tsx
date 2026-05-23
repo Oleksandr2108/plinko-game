@@ -79,7 +79,11 @@ export function GameBoard() {
                 risk={risk}
                 slotCenters={slotCenters}
                 slotY={boardMetrics.slotY}
-                winningSlotIndex={hasVisibleActiveDrop ? undefined : (settledSlotIndex ?? undefined)}
+                winningSlotIndex={
+                  hasVisibleActiveDrop
+                    ? undefined
+                    : (settledSlotIndex ?? undefined)
+                }
               />
 
               {visibleDrops.map((drop) => (
