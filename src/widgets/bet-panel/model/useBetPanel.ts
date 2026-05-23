@@ -61,24 +61,8 @@ const applyBetResult = (bet: {
   rows: number;
   balanceAfter: number;
 }) => {
-  useDropBallStore
-    .getState()
-    .enqueueResult(mapBetToBall(bet), bet.balanceAfter);
+  useDropBallStore.getState().enqueueResult(mapBetToBall(bet));
 };
-
-const mapBetResult = (bet: {
-  betId: string;
-  bucketIndex: number;
-  multiplier: number;
-  amount: number;
-  payout: number;
-  path: string;
-  rows: number;
-  balanceAfter: number;
-}) => ({
-  ball: mapBetToBall(bet),
-  balanceAfter: bet.balanceAfter,
-});
 
 interface UseBetPanelResult {
   gameConfig: typeof plinkoApi extends { getGameConfig: () => Promise<infer T> }
@@ -88,7 +72,8 @@ interface UseBetPanelResult {
     ? T | undefined
     : never;
   isLoading: boolean;
-  isSubmitting: boolean;
+  isManualSubmitting: boolean;
+  isAutoSubmitting: boolean;
   errorMessage: string | undefined;
   placeManualBet: () => Promise<void>;
   startAutoBet: () => Promise<void>;
@@ -195,7 +180,7 @@ export function useBetPanel(): UseBetPanelResult {
         }
       }
 
-      useDropBallStore.getState().enqueueResults(bets.map(mapBetResult));
+      useDropBallStore.getState().enqueueResults(bets.map(mapBetToBall));
 
       return bets;
     },
@@ -232,7 +217,8 @@ export function useBetPanel(): UseBetPanelResult {
       gameConfigQuery.isLoading ||
       currentUserQuery.isLoading ||
       activeSeedQuery.isLoading,
-    isSubmitting: manualBetMutation.isPending || autoBetMutation.isPending,
+    isManualSubmitting: false,
+    isAutoSubmitting: autoBetMutation.isPending,
     errorMessage,
     placeManualBet: async () => {
       await manualBetMutation.mutateAsync();

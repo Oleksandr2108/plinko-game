@@ -4,7 +4,6 @@ import { useUserStore } from "@/entities/user";
 
 interface PendingDropResult {
   ball: Ball;
-  balanceAfter: number;
   launchDelayMs: number;
 }
 
@@ -14,8 +13,8 @@ interface DropBallState {
   history: Ball[];
   settledSlotIndex: number | null;
   setIsDropping: (v: boolean) => void;
-  enqueueResult: (ball: Ball, balanceAfter: number) => void;
-  enqueueResults: (results: Array<Omit<PendingDropResult, "launchDelayMs">>) => void;
+  enqueueResult: (ball: Ball) => void;
+  enqueueResults: (results: Ball[]) => void;
   completeActiveDrop: (ballId: string) => void;
 }
 
@@ -25,13 +24,12 @@ export const useDropBallStore = create<DropBallState>((set, get) => ({
   history: [],
   settledSlotIndex: null,
   setIsDropping: (isDropping) => set({ isDropping }),
-  enqueueResult: (ball, balanceAfter) =>
+  enqueueResult: (ball) =>
     set((state) => ({
       activeDrops: [
         ...state.activeDrops,
         {
           ball,
-          balanceAfter,
           launchDelayMs: 0,
         },
       ],
@@ -39,8 +37,8 @@ export const useDropBallStore = create<DropBallState>((set, get) => ({
     })),
   enqueueResults: (results) =>
     set((state) => {
-      const nextDrops = results.map((result, index) => ({
-        ...result,
+      const nextDrops = results.map((ball, index) => ({
+        ball,
         launchDelayMs: index * 500,
       }));
 
@@ -50,7 +48,9 @@ export const useDropBallStore = create<DropBallState>((set, get) => ({
       };
     }),
   completeActiveDrop: (ballId) => {
-    const activeDrop = get().activeDrops.find((drop) => drop.ball.id === ballId);
+    const activeDrop = get().activeDrops.find(
+      (drop) => drop.ball.id === ballId,
+    );
 
     if (!activeDrop) {
       return;
@@ -61,13 +61,17 @@ export const useDropBallStore = create<DropBallState>((set, get) => ({
     if (currentUser) {
       useUserStore.getState().setUser({
         ...currentUser,
-        balance: activeDrop.balanceAfter,
+        balance:
+          currentUser.balance +
+          (activeDrop.ball.payout - activeDrop.ball.betAmount),
       });
     }
 
     set((state) => {
       return {
-        activeDrops: state.activeDrops.filter((drop) => drop.ball.id !== ballId),
+        activeDrops: state.activeDrops.filter(
+          (drop) => drop.ball.id !== ballId,
+        ),
         history: [activeDrop.ball, ...state.history].slice(0, 50),
         settledSlotIndex: activeDrop.ball.slotIndex,
         isDropping: state.activeDrops.some((drop) => drop.ball.id !== ballId),

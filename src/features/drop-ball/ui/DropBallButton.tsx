@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/shared/ui";
-import { useDropBallStore } from "../model/store";
 
 export function DropBallButton({
   onClick,
@@ -10,15 +9,12 @@ export function DropBallButton({
   onClick?: () => void | Promise<void>;
   isPending?: boolean;
 }) {
-  const isDropping = useDropBallStore((state) => state.isDropping);
-  const disabled = isPending || isDropping;
-
   return (
     <Button
       onClick={onClick}
-      disabled={disabled}
+      disabled={isPending}
     >
-      {disabled ? "Dropping..." : "Bet"}
+      {isPending ? "Submitting..." : "Bet"}
     </Button>
   );
 }

@@ -14,7 +14,8 @@ export function BetPanel() {
     errorMessage,
     gameConfig,
     isLoading,
-    isSubmitting,
+    isAutoSubmitting,
+    isManualSubmitting,
     placeManualBet,
     startAutoBet,
   } = useBetPanel();
@@ -44,12 +45,12 @@ export function BetPanel() {
         {mode === "auto" ? (
           <AutoBetForm
             onStart={startAutoBet}
-            isPending={isSubmitting}
+            isPending={isAutoSubmitting}
           />
         ) : (
           <DropBallButton
             onClick={placeManualBet}
-            isPending={isSubmitting}
+            isPending={isManualSubmitting}
           />
         )}
       </div>
