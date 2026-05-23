@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useGameSettingsStore } from "@/features/game-settings";
+import { playBallTickSound, playProfitSound } from "@/shared/lib";
 import { BALL_STEP_MS, getBallKeyframes } from "./gameBoardGeometry";
 
 export function AnimatedBall({
@@ -22,19 +24,29 @@ export function AnimatedBall({
     () => getBallKeyframes(rows, path, slotIndex),
     [path, rows, slotIndex],
   );
-  const [frameIndex, setFrameIndex] = useState(0);
-  const [hasStarted, setHasStarted] = useState(!enabled || delayMs === 0);
+  const soundEnabled = useGameSettingsStore((state) => state.soundEnabled);
+  const [animatedFrameIndex, setAnimatedFrameIndex] = useState(0);
+  const [hasDelayElapsed, setHasDelayElapsed] = useState(
+    !enabled || delayMs === 0,
+  );
+  const lastTickFrameIndexRef = useRef<number | null>(null);
+  const hasPlayedProfitSoundRef = useRef(false);
+  const pegContactFrames = useMemo(
+    () => Array.from({ length: Math.min(rows, path.length) }, (_, index) => 2 + index * 3),
+    [path.length, rows],
+  );
+  const hasStarted = !enabled || delayMs === 0 || hasDelayElapsed;
+  const frameIndex = enabled
+    ? animatedFrameIndex
+    : Math.max(frames.length - 1, 0);
 
   useEffect(() => {
     if (!enabled || delayMs === 0) {
-      setHasStarted(true);
       return;
     }
 
-    setHasStarted(false);
-
     const timeoutId = window.setTimeout(() => {
-      setHasStarted(true);
+      setHasDelayElapsed(true);
     }, delayMs);
 
     return () => {
@@ -43,11 +55,29 @@ export function AnimatedBall({
   }, [delayMs, enabled, path, rows, slotIndex]);
 
   useEffect(() => {
-    setFrameIndex(enabled ? 0 : Math.max(frames.length - 1, 0));
-  }, [enabled, frames.length, path, rows, slotIndex]);
+    lastTickFrameIndexRef.current = null;
+    hasPlayedProfitSoundRef.current = false;
+  }, [delayMs, enabled, path, rows, slotIndex]);
 
   const activeFrame =
     frames[Math.min(frameIndex, Math.max(frames.length - 1, 0))];
+
+  useEffect(() => {
+    if (!enabled || !hasStarted || !soundEnabled) {
+      return;
+    }
+
+    if (!pegContactFrames.includes(frameIndex)) {
+      return;
+    }
+
+    if (lastTickFrameIndexRef.current === frameIndex) {
+      return;
+    }
+
+    playBallTickSound();
+    lastTickFrameIndexRef.current = frameIndex;
+  }, [enabled, frameIndex, hasStarted, pegContactFrames, soundEnabled]);
 
   useEffect(() => {
     if (frames.length === 0 || !enabled || !hasStarted) {
@@ -55,7 +85,7 @@ export function AnimatedBall({
     }
 
     const intervalId = window.setInterval(() => {
-      setFrameIndex((current) => {
+      setAnimatedFrameIndex((current) => {
         if (current >= frames.length - 1) {
           window.clearInterval(intervalId);
           return current;
@@ -76,6 +106,11 @@ export function AnimatedBall({
     }
 
     if (!enabled) {
+      if (soundEnabled && !hasPlayedProfitSoundRef.current) {
+        playProfitSound();
+        hasPlayedProfitSoundRef.current = true;
+      }
+
       const timeoutId = window.setTimeout(() => {
         onComplete();
       }, 0);
@@ -93,6 +128,11 @@ export function AnimatedBall({
       return;
     }
 
+    if (soundEnabled && !hasPlayedProfitSoundRef.current) {
+      playProfitSound();
+      hasPlayedProfitSoundRef.current = true;
+    }
+
     const timeoutId = window.setTimeout(() => {
       onComplete();
     }, BALL_STEP_MS);
@@ -100,7 +140,7 @@ export function AnimatedBall({
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [enabled, frameIndex, frames.length, hasStarted, onComplete]);
+  }, [enabled, frameIndex, frames.length, hasStarted, onComplete, soundEnabled]);
 
   if (!activeFrame || (enabled && !hasStarted)) {
     return null;

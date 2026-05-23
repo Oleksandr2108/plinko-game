@@ -1,5 +1,7 @@
 "use client";
 
+import { useGameSettingsStore } from "@/features/game-settings";
+import { playBetSound, primeGameSounds } from "@/shared/lib";
 import { Button } from "@/shared/ui";
 import { useAutoBetStore } from "../model/store";
 
@@ -47,6 +49,17 @@ export function AutoBetForm({
   const setNumberOfBets = useAutoBetStore((state) => state.setNumberOfBets);
   const setStopOnProfit = useAutoBetStore((state) => state.setStopOnProfit);
   const setStopOnLoss = useAutoBetStore((state) => state.setStopOnLoss);
+  const soundEnabled = useGameSettingsStore((state) => state.soundEnabled);
+
+  const handleStart = async () => {
+    await primeGameSounds();
+
+    if (soundEnabled) {
+      playBetSound();
+    }
+
+    await onStart?.();
+  };
 
   return (
     <div className="space-y-4 pt-4 border-t  border-(--borderColor)">
@@ -71,7 +84,7 @@ export function AutoBetForm({
         />
       </div>
       <Button
-        onClick={onStart}
+        onClick={handleStart}
         disabled={isPending}
       >
         {isPending ? "Running..." : "Start Auto"}

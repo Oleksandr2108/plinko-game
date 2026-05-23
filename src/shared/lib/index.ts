@@ -53,3 +53,10 @@ export const toMinimalUnits = (value: number) => {
 
   return String(Math.round(value * MINIMAL_UNITS_PER_CREDIT));
 };
+
+export {
+  playBallTickSound,
+  playBetSound,
+  playProfitSound,
+  primeGameSounds,
+} from "./audio";

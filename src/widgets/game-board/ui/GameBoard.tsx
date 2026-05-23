@@ -84,7 +84,7 @@ export function GameBoard() {
 
               {visibleDrops.map((drop) => (
                 <AnimatedBall
-                  key={drop.ball.id}
+                  key={`${drop.ball.id}-${animationsEnabled ? "animated" : "static"}`}
                   rows={rows}
                   path={drop.ball.path}
                   slotIndex={drop.ball.slotIndex}
