@@ -8,12 +8,14 @@ export function AnimatedBall({
   path,
   slotIndex,
   enabled = true,
+  delayMs = 0,
   onComplete,
 }: {
   rows: number;
   path: string;
   slotIndex?: number;
   enabled?: boolean;
+  delayMs?: number;
   onComplete?: () => void;
 }) {
   const frames = useMemo(
@@ -21,6 +23,24 @@ export function AnimatedBall({
     [path, rows, slotIndex],
   );
   const [frameIndex, setFrameIndex] = useState(0);
+  const [hasStarted, setHasStarted] = useState(!enabled || delayMs === 0);
+
+  useEffect(() => {
+    if (!enabled || delayMs === 0) {
+      setHasStarted(true);
+      return;
+    }
+
+    setHasStarted(false);
+
+    const timeoutId = window.setTimeout(() => {
+      setHasStarted(true);
+    }, delayMs);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [delayMs, enabled, path, rows, slotIndex]);
 
   useEffect(() => {
     setFrameIndex(enabled ? 0 : Math.max(frames.length - 1, 0));
@@ -30,7 +50,7 @@ export function AnimatedBall({
     frames[Math.min(frameIndex, Math.max(frames.length - 1, 0))];
 
   useEffect(() => {
-    if (frames.length === 0 || !enabled) {
+    if (frames.length === 0 || !enabled || !hasStarted) {
       return;
     }
 
@@ -48,7 +68,7 @@ export function AnimatedBall({
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [enabled, frames]);
+  }, [enabled, frames, hasStarted]);
 
   useEffect(() => {
     if (!onComplete || frames.length === 0) {
@@ -69,6 +89,10 @@ export function AnimatedBall({
       return;
     }
 
+    if (!hasStarted) {
+      return;
+    }
+
     const timeoutId = window.setTimeout(() => {
       onComplete();
     }, BALL_STEP_MS);
@@ -76,9 +100,9 @@ export function AnimatedBall({
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [enabled, frameIndex, frames.length, onComplete]);
+  }, [enabled, frameIndex, frames.length, hasStarted, onComplete]);
 
-  if (!activeFrame) {
+  if (!activeFrame || (enabled && !hasStarted)) {
     return null;
   }
 

@@ -5,47 +5,52 @@ import { useUserStore } from "@/entities/user";
 interface PendingDropResult {
   ball: Ball;
   balanceAfter: number;
+  launchDelayMs: number;
 }
 
 interface DropBallState {
   isDropping: boolean;
-  activeDrop: PendingDropResult | null;
-  queue: PendingDropResult[];
+  activeDrops: PendingDropResult[];
   history: Ball[];
   settledSlotIndex: number | null;
   setIsDropping: (v: boolean) => void;
   enqueueResult: (ball: Ball, balanceAfter: number) => void;
-  completeActiveDrop: () => void;
+  enqueueResults: (results: Array<Omit<PendingDropResult, "launchDelayMs">>) => void;
+  completeActiveDrop: (ballId: string) => void;
 }
 
 export const useDropBallStore = create<DropBallState>((set, get) => ({
   isDropping: false,
-  activeDrop: null,
-  queue: [],
+  activeDrops: [],
   history: [],
   settledSlotIndex: null,
   setIsDropping: (isDropping) => set({ isDropping }),
   enqueueResult: (ball, balanceAfter) =>
+    set((state) => ({
+      activeDrops: [
+        ...state.activeDrops,
+        {
+          ball,
+          balanceAfter,
+          launchDelayMs: 0,
+        },
+      ],
+      isDropping: true,
+    })),
+  enqueueResults: (results) =>
     set((state) => {
-      const nextResult: PendingDropResult = {
-        ball,
-        balanceAfter,
-      };
-
-      if (!state.activeDrop) {
-        return {
-          activeDrop: nextResult,
-          isDropping: true,
-        };
-      }
+      const nextDrops = results.map((result, index) => ({
+        ...result,
+        launchDelayMs: index * 500,
+      }));
 
       return {
-        queue: [...state.queue, nextResult],
+        activeDrops: [...state.activeDrops, ...nextDrops],
         isDropping: true,
       };
     }),
-  completeActiveDrop: () => {
-    const activeDrop = get().activeDrop;
+  completeActiveDrop: (ballId) => {
+    const activeDrop = get().activeDrops.find((drop) => drop.ball.id === ballId);
 
     if (!activeDrop) {
       return;
@@ -61,14 +66,11 @@ export const useDropBallStore = create<DropBallState>((set, get) => ({
     }
 
     set((state) => {
-      const [nextActiveDrop, ...restQueue] = state.queue;
-
       return {
-        activeDrop: nextActiveDrop ?? null,
-        queue: restQueue,
+        activeDrops: state.activeDrops.filter((drop) => drop.ball.id !== ballId),
         history: [activeDrop.ball, ...state.history].slice(0, 50),
         settledSlotIndex: activeDrop.ball.slotIndex,
-        isDropping: Boolean(nextActiveDrop),
+        isDropping: state.activeDrops.some((drop) => drop.ball.id !== ballId),
       };
     });
   },

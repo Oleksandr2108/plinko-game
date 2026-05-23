@@ -24,7 +24,7 @@ const riskToApiMap = {
 export function GameBoard() {
   const rows = useSelectRiskStore((state) => state.rows);
   const risk = useSelectRiskStore((state) => state.risk);
-  const activeDrop = useDropBallStore((state) => state.activeDrop);
+  const activeDrops = useDropBallStore((state) => state.activeDrops);
   const settledSlotIndex = useDropBallStore((state) => state.settledSlotIndex);
   const completeActiveDrop = useDropBallStore(
     (state) => state.completeActiveDrop,
@@ -49,6 +49,11 @@ export function GameBoard() {
     [multipliers, rows],
   );
   const pinRows = useMemo(() => buildPinRows(rows), [rows]);
+  const visibleDrops = useMemo(
+    () => activeDrops.filter((drop) => drop.ball.rows === rows),
+    [activeDrops, rows],
+  );
+  const hasVisibleActiveDrop = visibleDrops.length > 0;
 
   return (
     <section className="flex min-h-0 flex-1 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(30,38,56,0.45),rgba(15,20,25,0)_40%),rgba(17,22,30,0.94)] px-6 lg:px-10">
@@ -74,23 +79,20 @@ export function GameBoard() {
                 risk={risk}
                 slotCenters={slotCenters}
                 slotY={boardMetrics.slotY}
-                winningSlotIndex={
-                  activeDrop?.ball.rows === rows
-                    ? undefined
-                    : (settledSlotIndex ?? undefined)
-                }
+                winningSlotIndex={hasVisibleActiveDrop ? undefined : (settledSlotIndex ?? undefined)}
               />
 
-              {activeDrop?.ball.rows === rows ? (
+              {visibleDrops.map((drop) => (
                 <AnimatedBall
-                  key={activeDrop.ball.id}
+                  key={drop.ball.id}
                   rows={rows}
-                  path={activeDrop.ball.path}
-                  slotIndex={activeDrop.ball.slotIndex}
+                  path={drop.ball.path}
+                  slotIndex={drop.ball.slotIndex}
                   enabled={animationsEnabled}
-                  onComplete={completeActiveDrop}
+                  delayMs={animationsEnabled ? drop.launchDelayMs : 0}
+                  onComplete={() => completeActiveDrop(drop.ball.id)}
                 />
-              ) : null}
+              ))}
             </svg>
           </div>
         </div>

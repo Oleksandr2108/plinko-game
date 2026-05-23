@@ -66,6 +66,20 @@ const applyBetResult = (bet: {
     .enqueueResult(mapBetToBall(bet), bet.balanceAfter);
 };
 
+const mapBetResult = (bet: {
+  betId: string;
+  bucketIndex: number;
+  multiplier: number;
+  amount: number;
+  payout: number;
+  path: string;
+  rows: number;
+  balanceAfter: number;
+}) => ({
+  ball: mapBetToBall(bet),
+  balanceAfter: bet.balanceAfter,
+});
+
 interface UseBetPanelResult {
   gameConfig: typeof plinkoApi extends { getGameConfig: () => Promise<infer T> }
     ? T | undefined
@@ -169,7 +183,6 @@ export function useBetPanel(): UseBetPanelResult {
       for (let index = 0; index < numberOfBets; index += 1) {
         const bet = await plinkoApi.placeBet(buildBetInput());
         bets.push(bet);
-        applyBetResult(bet);
 
         totalDelta += bet.payout - bet.amount;
 
@@ -181,6 +194,8 @@ export function useBetPanel(): UseBetPanelResult {
           break;
         }
       }
+
+      useDropBallStore.getState().enqueueResults(bets.map(mapBetResult));
 
       return bets;
     },
