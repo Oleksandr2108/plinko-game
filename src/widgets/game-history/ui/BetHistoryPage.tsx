@@ -40,7 +40,7 @@ export function BetHistoryPage() {
   }, [activePage, filteredBets]);
 
   return (
-    <main className="min-h-screen ">
+    <main className="min-h-full">
       <div className=" ">
         <BetHistoryToolbar />
 

@@ -10,6 +10,7 @@ type FooterItem = {
 
 type AppFooterProps = {
 	activeHref?: string;
+	className?: string;
 	items?: FooterItem[];
 };
 
@@ -38,10 +39,18 @@ const DEFAULT_ITEMS: FooterItem[] = [
 
 export function AppFooter({
 	activeHref = "/",
+	className,
 	items = DEFAULT_ITEMS,
 }: AppFooterProps) {
 	return (
-		<footer className="w-full border-t border-(--borderColor) bg-[#1a1f2e] px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2">
+		<footer
+			className={[
+				"w-full border-t border-(--borderColor) bg-[#1a1f2e] px-2 pb-[max(env(safe-area-inset-bottom),8px)] pt-2",
+				className,
+			]
+				.filter(Boolean)
+				.join(" ")}
+		>
 			<nav
 				aria-label="Bottom navigation"
 				className="mx-auto grid max-w-md grid-cols-4"
