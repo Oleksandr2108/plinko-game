@@ -1,1 +1,1 @@
-export type { Slot } from "./types";
+export type { Slot } from "./model/types";
