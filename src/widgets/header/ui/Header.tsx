@@ -31,13 +31,7 @@ export function Header() {
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <Link href="/history" className="flex items-center gap-2 rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] px-4 py-3 text-[16px] font-medium text-(--secondaryText) transition-colors hover:bg-(--bgTabActive)">
-          <Image
-            src={HistoryIcon}
-            alt="History Icon"
-          />
-          History
-        </Link>
+       
         <LogoutButton />
       </div>
     </header>

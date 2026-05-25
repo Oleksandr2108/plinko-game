@@ -5,11 +5,7 @@ import { useRouter } from "next/navigation";
 import LogoutIcon from "../../../../../public/icons/logout.svg";
 import { logout } from "../model/logout";
 
-export function LogoutButton({
-  className,
-}: {
-  className?: string;
-}) {
+export function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
 
   async function handleLogout() {
