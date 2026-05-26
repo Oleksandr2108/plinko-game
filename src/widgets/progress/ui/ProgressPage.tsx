@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
 import DailyMissionsIcon from "../../../../public/icons/progress_DailyMissions.svg";
 import StarterMissionsIcon from "../../../../public/icons/progress_StarterMissions.svg";
@@ -10,32 +10,9 @@ import { MissionSection } from "./MissionSection";
 import { ProgressToolbar } from "./ProgressToolbar";
 
 export function ProgressPage() {
-  const queryClient = useQueryClient();
   const progressionQuery = useQuery({
     queryKey: PLINKO_QUERY_KEYS.progression,
     queryFn: plinkoApi.getProgression,
-  });
-
-  const dailyClaimMutation = useMutation({
-    mutationFn: plinkoApi.claimDailyReward,
-    onSuccess: (result) => {
-      queryClient.setQueryData(
-        PLINKO_QUERY_KEYS.progression,
-        result.progression,
-      );
-      queryClient.invalidateQueries({ queryKey: PLINKO_QUERY_KEYS.currentUser });
-    },
-  });
-
-  const missionClaimMutation = useMutation({
-    mutationFn: plinkoApi.claimMissionReward,
-    onSuccess: (result) => {
-      queryClient.setQueryData(
-        PLINKO_QUERY_KEYS.progression,
-        result.progression,
-      );
-      queryClient.invalidateQueries({ queryKey: PLINKO_QUERY_KEYS.currentUser });
-    },
   });
 
   return (
@@ -51,24 +28,16 @@ export function ProgressPage() {
         ) : progressionQuery.data ? (
           <>
             <LevelCard progression={progressionQuery.data} />
-            <DailyRewardCard
-              progression={progressionQuery.data}
-              isPending={dailyClaimMutation.isPending}
-              onClaim={() => dailyClaimMutation.mutate()}
-            />
+            <DailyRewardCard progression={progressionQuery.data} />
             <MissionSection
               icon={DailyMissionsIcon}
               title="Daily Missions"
               missions={progressionQuery.data.missions.daily}
-              pendingMissionId={missionClaimMutation.variables ?? null}
-              onClaim={(missionId) => missionClaimMutation.mutate(missionId)}
             />
             <MissionSection
               icon={StarterMissionsIcon}
               title="Starter Missions"
               missions={progressionQuery.data.missions.starter}
-              pendingMissionId={missionClaimMutation.variables ?? null}
-              onClaim={(missionId) => missionClaimMutation.mutate(missionId)}
             />
           </>
         ) : null}

@@ -1,10 +1,11 @@
+import { memo } from "react";
 import Image from "next/image";
 import type { Progression } from "@/entities/progression";
 import LevelIcon from "../../../../public/icons/progress_Level.svg";
 import { ProgressBar } from "./ProgressBar";
 import { numberFormatter } from "./progressFormat";
 
-export function LevelCard({ progression }: { progression: Progression }) {
+function LevelCardBase({ progression }: { progression: Progression }) {
   const levelRange = Math.max(
     1,
     progression.xpForNextLevel - progression.xpForCurrentLevel,
@@ -50,3 +51,15 @@ export function LevelCard({ progression }: { progression: Progression }) {
     </section>
   );
 }
+
+export const LevelCard = memo(
+  LevelCardBase,
+  (previous, next) =>
+    previous.progression.level === next.progression.level &&
+    previous.progression.xp === next.progression.xp &&
+    previous.progression.xpForCurrentLevel ===
+      next.progression.xpForCurrentLevel &&
+    previous.progression.xpForNextLevel === next.progression.xpForNextLevel &&
+    previous.progression.xpIntoCurrentLevel ===
+      next.progression.xpIntoCurrentLevel,
+);

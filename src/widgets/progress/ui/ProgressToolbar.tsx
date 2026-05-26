@@ -1,8 +1,9 @@
+import { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import BackArrowIcon from "../../../../public/icons/backArrowsItem.svg";
 
-export function ProgressToolbar() {
+function ProgressToolbarBase() {
   return (
     <div className="flex items-center gap-4 border-b border-(--borderColor) px-6 py-2.5">
       <Link
@@ -19,3 +20,5 @@ export function ProgressToolbar() {
     </div>
   );
 }
+
+export const ProgressToolbar = memo(ProgressToolbarBase);

@@ -1,19 +1,16 @@
+import { memo } from "react";
 import Image, { type StaticImageData } from "next/image";
 import type { ProgressionMission } from "@/entities/progression";
 import { MissionCard } from "./MissionCard";
 
-export function MissionSection({
+function MissionSectionBase({
   icon,
   title,
   missions,
-  pendingMissionId,
-  onClaim,
 }: {
   icon: StaticImageData;
   title: string;
   missions: ProgressionMission[];
-  pendingMissionId: string | null;
-  onClaim: (missionId: string) => void;
 }) {
   return (
     <section className="w-full max-w-[864px] space-y-3">
@@ -31,8 +28,6 @@ export function MissionSection({
           <MissionCard
             key={mission.key}
             mission={mission}
-            isPending={pendingMissionId === mission.id}
-            onClaim={onClaim}
           />
         ))
       ) : (
@@ -43,3 +38,5 @@ export function MissionSection({
     </section>
   );
 }
+
+export const MissionSection = memo(MissionSectionBase);

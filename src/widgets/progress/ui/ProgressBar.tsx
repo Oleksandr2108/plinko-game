@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { clampPercent } from "./progressFormat";
 
-export function ProgressBar({
+function ProgressBarBase({
   value,
   variant = "level",
 }: {
@@ -21,3 +22,5 @@ export function ProgressBar({
     </div>
   );
 }
+
+export const ProgressBar = memo(ProgressBarBase);

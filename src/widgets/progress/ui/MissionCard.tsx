@@ -1,27 +1,42 @@
+import { memo } from "react";
 import Image from "next/image";
-import type { ProgressionMission } from "@/entities/progression";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Progression, ProgressionMission } from "@/entities/progression";
+import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
 import DailyMissionItemIcon from "../../../../public/icons/progress_DailyMissionsItem.svg";
+import BetIcon from "../../../../public/icons/betIcon.svg";
+import { mergeProgression } from "../model/mergeProgression";
 import { ProgressBar } from "./ProgressBar";
-import {
-  clampPercent,
-  formatCredits,
-  formatMissionType,
-  numberFormatter,
-} from "./progressFormat";
+import { clampPercent, formatCredits, numberFormatter } from "./progressFormat";
 
-export function MissionCard({
+function MissionCardBase({
   mission,
-  isPending,
-  onClaim,
 }: {
   mission: ProgressionMission;
-  isPending: boolean;
-  onClaim: (missionId: string) => void;
 }) {
+  const queryClient = useQueryClient();
   const progressPercent =
     mission.target > 0 ? (mission.progress / mission.target) * 100 : 0;
   const isClaimed = Boolean(mission.claimedAt);
   const canClaim = mission.claimable && Boolean(mission.id) && !isClaimed;
+  const claimMutation = useMutation({
+    mutationFn: (missionId: string) => plinkoApi.claimMissionReward(missionId),
+    onSuccess: (result) => {
+      queryClient.setQueryData<Progression | undefined>(
+        PLINKO_QUERY_KEYS.progression,
+        (previous) => mergeProgression(previous, result.progression),
+      );
+      queryClient.invalidateQueries({
+        queryKey: PLINKO_QUERY_KEYS.currentUser,
+      });
+    },
+  });
+
+  const buttonStatusClass = isClaimed
+    ? "border-[var(--colorError)] bg-[var(--bgError)] text-[var(--colorError)] hover:bg-[rgba(251,44,54,0.35)]"
+    : canClaim
+      ? "border-[var(--colorAccess)] bg-[var(--bgAccess)] text-[var(--colorAccess)] hover:bg-[rgba(0,201,80,0.35)] cursor-pointer"
+      : "border-[var(--colorMedium)] bg-[var(--bgMedium)] text-[var(--colorMedium)] hover:bg-[rgba(240,177,0,0.35)]";
 
   return (
     <article className="w-full max-w-[864px] rounded-[10px] border border-[rgba(43,127,255,0.3)] bg-[linear-gradient(135deg,rgba(17,35,62,0.9),rgba(22,43,74,0.72))] p-4">
@@ -41,16 +56,13 @@ export function MissionCard({
               <p className="truncate text-[14px] font-bold text-white">
                 {mission.title}
               </p>
-              <p className="mt-1 truncate text-[12px] text-(--text)">
+              <p className=" truncate text-[12px] text-(--text)">
                 {mission.description}
               </p>
             </div>
-            <span className="shrink-0 rounded-md border border-[#235b93] bg-[rgba(35,91,147,0.35)] px-2 py-1 text-[11px] font-medium text-[#70b7ff]">
-              {formatMissionType(mission.type)}
-            </span>
           </div>
 
-          <div className="mb-2 flex items-center justify-between text-[12px] text-(--secondaryText)">
+          <div className="mb-1 flex items-center justify-between text-[12px] text-(--text) font-normal">
             <span>
               {numberFormatter.format(mission.progress)} /{" "}
               {numberFormatter.format(mission.target)}
@@ -61,21 +73,29 @@ export function MissionCard({
 
           <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3 text-[12px] font-semibold">
-              <span className="text-(--colorAccess)">
-                + {formatCredits(mission.creditReward)}
+              <span className="text-(--colorMedium) flex items-center gap-2">
+                <Image
+                  src={BetIcon}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                />
+                {formatCredits(mission.creditReward)}
               </span>
-              <span className="text-[#5aa7ff]">+ {mission.xpReward} XP</span>
+              <span className="text-[#5aa7ff] font-medium">
+                +{mission.xpReward} XP
+              </span>
             </div>
             <button
               type="button"
-              disabled={!canClaim || isPending}
-              onClick={() => mission.id && onClaim(mission.id)}
-              className="rounded-[8px] border border-(--borderColor) bg-(--bgTabActive) px-3 py-1.5 text-[12px] font-semibold text-(--secondaryText) transition-colors hover:bg-(--bgSecondaryTab) disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={!canClaim || claimMutation.isPending}
+              onClick={() => mission.id && claimMutation.mutate(mission.id)}
+              className={`rounded-[8px] border px-3 py-1.5 text-[12px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${buttonStatusClass}`}
             >
-              {isPending
-                ? "Claiming..."
-                : isClaimed
-                  ? "Claimed"
+              {isClaimed
+                ? "Claimed"
+                : claimMutation.isPending
+                  ? "Claiming..."
                   : canClaim
                     ? "Claim"
                     : "In Progress"}
@@ -86,3 +106,5 @@ export function MissionCard({
     </article>
   );
 }
+
+export const MissionCard = memo(MissionCardBase);
