@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Progression } from "@/entities/progression";
 import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
+import { playSuccessSound } from "@/shared/lib/audio";
 import BetIcon from "../../../../public/icons/betIcon.svg";
 import DailyRewardIcon from "../../../../public/icons/progress_DailyReward.svg";
 import DailyRewardStreakIcon from "../../../../public/icons/progress_DailyRewardStreak.svg";
@@ -87,7 +88,10 @@ function DailyRewardCardBase({ progression }: { progression: Progression }) {
       {daily.canClaim ? (
         <button
           type="button"
-          onClick={() => claimMutation.mutate()}
+          onClick={() => {
+            playSuccessSound();
+            claimMutation.mutate();
+          }}
           disabled={claimMutation.isPending}
           className="w-full rounded-[10px] bg-[linear-gradient(90deg,#ff6900_0%,#ff2d3f_100%)] px-4 py-3.5 text-[16px] font-bold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-55"
         >
@@ -123,8 +127,7 @@ function DailyRewardCardBase({ progression }: { progression: Progression }) {
 export const DailyRewardCard = memo(
   DailyRewardCardBase,
   (previous, next) =>
-    previous.progression.daily.canClaim ===
-      next.progression.daily.canClaim &&
+    previous.progression.daily.canClaim === next.progression.daily.canClaim &&
     previous.progression.daily.streak === next.progression.daily.streak &&
     previous.progression.daily.nextClaimAt ===
       next.progression.daily.nextClaimAt &&

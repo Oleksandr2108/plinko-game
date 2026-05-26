@@ -3,17 +3,14 @@ import Image from "next/image";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Progression, ProgressionMission } from "@/entities/progression";
 import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
+import { playSuccessSound } from "@/shared/lib/audio";
 import DailyMissionItemIcon from "../../../../public/icons/progress_DailyMissionsItem.svg";
 import BetIcon from "../../../../public/icons/betIcon.svg";
 import { mergeProgression } from "../model/mergeProgression";
 import { ProgressBar } from "./ProgressBar";
 import { clampPercent, formatCredits, numberFormatter } from "./progressFormat";
 
-function MissionCardBase({
-  mission,
-}: {
-  mission: ProgressionMission;
-}) {
+function MissionCardBase({ mission }: { mission: ProgressionMission }) {
   const queryClient = useQueryClient();
   const progressPercent =
     mission.target > 0 ? (mission.progress / mission.target) * 100 : 0;
@@ -89,7 +86,11 @@ function MissionCardBase({
             <button
               type="button"
               disabled={!canClaim || claimMutation.isPending}
-              onClick={() => mission.id && claimMutation.mutate(mission.id)}
+              onClick={() => {
+                if (!mission.id) return;
+                playSuccessSound();
+                claimMutation.mutate(mission.id);
+              }}
               className={`rounded-[8px] border px-3 py-1.5 text-[12px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${buttonStatusClass}`}
             >
               {isClaimed

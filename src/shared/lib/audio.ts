@@ -2,13 +2,14 @@ type WindowWithWebkitAudio = Window & {
   webkitAudioContext?: typeof AudioContext;
 };
 
-type SoundName = "bet" | "profit";
+type SoundName = "bet" | "profit" | "success";
 const PROFIT_SOUND_DURATION_SECONDS = 2;
 
 let audioContext: AudioContext | null = null;
 const soundSources: Record<SoundName, string> = {
   bet: "/sounds/Bet.mp3",
   profit: "/sounds/profit.mp3",
+  success: "/sounds/success.mp3",
 };
 const soundTemplates = new Map<SoundName, HTMLAudioElement>();
 
@@ -55,7 +56,8 @@ const playBufferedSound = (soundName: SoundName) => {
   }
 
   const audioInstance = template.cloneNode() as HTMLAudioElement;
-  audioInstance.volume = soundName === "bet" ? 0.35 : 0.45;
+  audioInstance.volume =
+    soundName === "bet" ? 0.35 : soundName === "profit" ? 0.45 : 0.6;
 
   if (soundName === "profit") {
     window.setTimeout(() => {
@@ -112,4 +114,8 @@ export const playBetSound = () => {
 
 export const playProfitSound = () => {
   playBufferedSound("profit");
+};
+
+export const playSuccessSound = () => {
+  playBufferedSound("success");
 };
