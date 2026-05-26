@@ -4,6 +4,7 @@ import { useGameSettingsStore } from "@/features/game-settings";
 import { playBetSound, primeGameSounds } from "@/shared/lib";
 import { Button } from "@/shared/ui";
 import { useAutoBetStore } from "../model/store";
+import { useShallow } from "zustand/react/shallow";
 
 function Field({
   label,
@@ -45,13 +46,25 @@ export function AutoBetForm({
   onStop?: () => void;
   isPending?: boolean;
 }) {
-  const numberOfBets = useAutoBetStore((state) => state.numberOfBets);
-  const stopOnProfit = useAutoBetStore((state) => state.stopOnProfit);
-  const stopOnLoss = useAutoBetStore((state) => state.stopOnLoss);
-  const setNumberOfBets = useAutoBetStore((state) => state.setNumberOfBets);
-  const setStopOnProfit = useAutoBetStore((state) => state.setStopOnProfit);
-  const setStopOnLoss = useAutoBetStore((state) => state.setStopOnLoss);
-  const completedBets = useAutoBetStore((state) => state.completedBets);
+  const [
+    numberOfBets,
+    stopOnProfit,
+    stopOnLoss,
+    setNumberOfBets,
+    setStopOnProfit,
+    setStopOnLoss,
+    completedBets,
+  ] = useAutoBetStore(
+    useShallow((state) => [
+      state.numberOfBets,
+      state.stopOnProfit,
+      state.stopOnLoss,
+      state.setNumberOfBets,
+      state.setStopOnProfit,
+      state.setStopOnLoss,
+      state.completedBets,
+    ]),
+  );
   const soundEnabled = useGameSettingsStore((state) => state.soundEnabled);
 
   const handleStart = async () => {

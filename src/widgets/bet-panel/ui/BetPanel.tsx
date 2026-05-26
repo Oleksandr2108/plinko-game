@@ -29,7 +29,7 @@ export function BetPanel() {
   const maxRows = gameConfig?.rows.at(-1);
 
   return (
-    <aside className="relative z-10 flex h-full w-full max-w-82 shrink-0 flex-col items-center justify-between border-r border-(--borderColor) bg-[rgba(26,31,46,0.92)] px-4 pt-4 shadow-[0_18px_40px_rgba(0,0,0,0.35)]">
+    <aside className="relative z-10 flex  w-full max-w-82 shrink-0 flex-col items-center justify-between border-r border-(--borderColor) bg-[rgba(26,31,46,0.92)] px-4 pt-4 shadow-[0_18px_40px_rgba(0,0,0,0.35)]">
       <div className="w-full space-y-5">
         <BetModeTabs />
         {isLoading ? (
