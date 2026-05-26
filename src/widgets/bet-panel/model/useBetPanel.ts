@@ -77,6 +77,7 @@ interface UseBetPanelResult {
   errorMessage: string | undefined;
   placeManualBet: () => Promise<void>;
   startAutoBet: () => Promise<void>;
+  stopAutoBet: () => void;
 }
 
 export function useBetPanel(): UseBetPanelResult {
@@ -159,6 +160,10 @@ export function useBetPanel(): UseBetPanelResult {
     mutationFn: async () => {
       useDropBallStore.getState().setIsDropping(true);
 
+      // mark auto-running and reset completed count
+      useAutoBetStore.getState().setIsAutoRunning(true);
+      useAutoBetStore.getState().setCompletedBets(0);
+
       const { numberOfBets, stopOnProfit, stopOnLoss } =
         useAutoBetStore.getState();
 
@@ -166,10 +171,21 @@ export function useBetPanel(): UseBetPanelResult {
       const bets = [];
 
       for (let index = 0; index < numberOfBets; index += 1) {
+        // allow external stop
+        if (!useAutoBetStore.getState().isAutoRunning) {
+          break;
+        }
+
         const bet = await plinkoApi.placeBet(buildBetInput());
         bets.push(bet);
 
         totalDelta += bet.payout - bet.amount;
+
+        // enqueue a single result immediately so the ball drops per-bet
+        useDropBallStore.getState().enqueueResult(mapBetToBall(bet));
+
+        // increment completed bets counter for UI
+        useAutoBetStore.getState().incrementCompletedBets();
 
         if (stopOnProfit > 0 && totalDelta >= stopOnProfit) {
           break;
@@ -178,9 +194,15 @@ export function useBetPanel(): UseBetPanelResult {
         if (stopOnLoss > 0 && totalDelta <= -stopOnLoss) {
           break;
         }
-      }
 
-      useDropBallStore.getState().enqueueResults(bets.map(mapBetToBall));
+        // if we're going to perform another bet, wait 0.7s between requests
+        if (
+          index < numberOfBets - 1 &&
+          useAutoBetStore.getState().isAutoRunning
+        ) {
+          await new Promise((resolve) => setTimeout(resolve, 700));
+        }
+      }
 
       return bets;
     },
@@ -188,9 +210,17 @@ export function useBetPanel(): UseBetPanelResult {
       useDropBallStore.getState().setIsDropping(false);
     },
     onSettled: async () => {
+      // ensure auto-running flag is cleared
+      useAutoBetStore.getState().setIsAutoRunning(false);
+
       await finalizeBetFlow();
     },
   });
+
+  const stopAutoBet = () => {
+    useAutoBetStore.getState().setIsAutoRunning(false);
+    useDropBallStore.getState().setIsDropping(false);
+  };
 
   const errorMessage = useMemo(() => {
     return [
@@ -226,5 +256,6 @@ export function useBetPanel(): UseBetPanelResult {
     startAutoBet: async () => {
       await autoBetMutation.mutateAsync();
     },
+    stopAutoBet,
   };
 }

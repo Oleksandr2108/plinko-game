@@ -38,9 +38,11 @@ function Field({
 
 export function AutoBetForm({
   onStart,
+  onStop,
   isPending,
 }: {
   onStart?: () => void | Promise<void>;
+  onStop?: () => void;
   isPending?: boolean;
 }) {
   const numberOfBets = useAutoBetStore((state) => state.numberOfBets);
@@ -49,6 +51,7 @@ export function AutoBetForm({
   const setNumberOfBets = useAutoBetStore((state) => state.setNumberOfBets);
   const setStopOnProfit = useAutoBetStore((state) => state.setStopOnProfit);
   const setStopOnLoss = useAutoBetStore((state) => state.setStopOnLoss);
+  const completedBets = useAutoBetStore((state) => state.completedBets);
   const soundEnabled = useGameSettingsStore((state) => state.soundEnabled);
 
   const handleStart = async () => {
@@ -83,12 +86,32 @@ export function AutoBetForm({
           step={0.01}
         />
       </div>
-      <Button
-        onClick={handleStart}
-        disabled={isPending}
-      >
-        {isPending ? "Running..." : "Start Auto"}
-      </Button>
+      {isPending ? (
+        <Button
+          onClick={() => onStop?.()}
+          className="w-full"
+          style={{
+            boxShadow:
+              "0 4px 6px -4px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+            background: "linear-gradient(90deg, #fb2c36 0%, #e7000b 100%)",
+            fontWeight: 700,
+            fontSize: 18,
+            lineHeight: "156%",
+            letterSpacing: "-0.02em",
+            textAlign: "center",
+            color: "#fff",
+          }}
+        >
+          {`Stop (${completedBets}/${numberOfBets})`}
+        </Button>
+      ) : (
+        <Button
+          onClick={handleStart}
+          disabled={isPending}
+        >
+          Start Auto
+        </Button>
+      )}
     </div>
   );
 }

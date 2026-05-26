@@ -19,6 +19,7 @@ export function BetPanel() {
     isManualSubmitting,
     placeManualBet,
     startAutoBet,
+    stopAutoBet,
   } = useBetPanel();
 
   const riskLevels = gameConfig?.risks.map(
@@ -50,6 +51,7 @@ export function BetPanel() {
         {mode === "auto" ? (
           <AutoBetForm
             onStart={startAutoBet}
+            onStop={stopAutoBet}
             isPending={isAutoSubmitting}
           />
         ) : (
