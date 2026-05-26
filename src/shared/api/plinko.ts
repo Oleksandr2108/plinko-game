@@ -1,5 +1,13 @@
 import type { Bet, BetList } from "@/entities/bet";
 import type { ApiRiskLevel, GameConfig } from "@/entities/game";
+import type {
+  ClaimRewardResult,
+  ClaimedReward,
+  Progression,
+  ProgressionDaily,
+  ProgressionMission,
+  ProgressionReward,
+} from "@/entities/progression";
 import type { ActiveSeed } from "@/entities/seed";
 import type { User } from "@/entities/user";
 import type { RiskLevel } from "@/shared/config";
@@ -50,6 +58,66 @@ interface RawBetListResponse {
   nextCursor: string | null;
 }
 
+interface RawProgressionRewardResponse {
+  credits: string;
+  xp: number;
+}
+
+interface RawProgressionDailyResponse {
+  reward: RawProgressionRewardResponse;
+  canClaim: boolean;
+  streak: number;
+  nextClaimAt: string;
+}
+
+interface RawProgressionMissionResponse {
+  creditReward: string;
+  id: string | null;
+  key: string;
+  type: unknown;
+  title: string;
+  description: string;
+  periodKey: string;
+  target: number;
+  progress: number;
+  status: unknown;
+  xpReward: number;
+  claimable: boolean;
+  completedAt: string | null;
+  claimedAt: string | null;
+}
+
+interface RawProgressionResponse {
+  daily: RawProgressionDailyResponse;
+  missions: {
+    daily: RawProgressionMissionResponse[];
+    starter: RawProgressionMissionResponse[];
+  };
+  level: number;
+  xp: number;
+  xpForCurrentLevel: number;
+  xpForNextLevel: number;
+  xpIntoCurrentLevel: number;
+}
+
+interface RawClaimedRewardResponse {
+  source: "DAILY_BONUS" | "MISSION";
+  missionId?: string;
+  missionKey?: string;
+  credits: string;
+  balanceAfter: string;
+  sourceKey: string;
+  periodKey: string;
+  xp: number;
+  levelBefore: number;
+  levelAfter: number;
+}
+
+interface RawClaimRewardResponse {
+  reward: RawClaimedRewardResponse;
+  progression: RawProgressionResponse;
+}
+
 export interface ListBetsParams {
   limit?: number;
   cursor?: string;
@@ -60,6 +128,7 @@ export const PLINKO_QUERY_KEYS = {
   gameConfig: ["game-config"] as const,
   currentUser: ["current-user"] as const,
   activeSeed: ["active-seed"] as const,
+  progression: ["progression"] as const,
   betHistory: (params: ListBetsParams = {}) => ["bet-history", params] as const,
 };
 
@@ -96,6 +165,100 @@ const mapBet = (bet: RawBetResponse): Bet => ({
   balanceAfter: fromMinimalUnits(bet.balanceAfter),
   seed: bet.seed,
   createdAt: bet.createdAt,
+});
+
+const stringifyEnum = (value: unknown) => {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  if (value && typeof value === "object") {
+    const firstValue = Object.values(value).find(
+      (item) => typeof item === "string" || typeof item === "number",
+    );
+
+    if (firstValue !== undefined) {
+      return String(firstValue);
+    }
+  }
+
+  return String(value ?? "");
+};
+
+const mapProgressionReward = (
+  reward: RawProgressionRewardResponse,
+): ProgressionReward => ({
+  credits: fromMinimalUnits(reward.credits),
+  xp: reward.xp,
+});
+
+const mapProgressionDaily = (
+  daily: RawProgressionDailyResponse,
+): ProgressionDaily => ({
+  reward: mapProgressionReward(daily.reward),
+  canClaim: daily.canClaim,
+  streak: daily.streak,
+  nextClaimAt: daily.nextClaimAt,
+});
+
+const mapProgressionMission = (
+  mission: RawProgressionMissionResponse,
+): ProgressionMission => ({
+  id: mission.id,
+  key: mission.key,
+  type: stringifyEnum(mission.type),
+  title: mission.title,
+  description: mission.description,
+  periodKey: mission.periodKey,
+  target: mission.target,
+  progress: mission.progress,
+  status: stringifyEnum(mission.status),
+  xpReward: mission.xpReward,
+  creditReward: fromMinimalUnits(mission.creditReward),
+  claimable: mission.claimable,
+  completedAt: mission.completedAt,
+  claimedAt: mission.claimedAt,
+});
+
+const mapProgression = (
+  progression: RawProgressionResponse,
+): Progression => ({
+  daily: mapProgressionDaily(progression.daily),
+  missions: {
+    daily: progression.missions.daily.map(mapProgressionMission),
+    starter: progression.missions.starter.map(mapProgressionMission),
+  },
+  level: progression.level,
+  xp: progression.xp,
+  xpForCurrentLevel: progression.xpForCurrentLevel,
+  xpForNextLevel: progression.xpForNextLevel,
+  xpIntoCurrentLevel: progression.xpIntoCurrentLevel,
+});
+
+const mapClaimedReward = (
+  reward: RawClaimedRewardResponse,
+): ClaimedReward => ({
+  source: reward.source,
+  missionId: reward.missionId,
+  missionKey: reward.missionKey,
+  credits: fromMinimalUnits(reward.credits),
+  balanceAfter: fromMinimalUnits(reward.balanceAfter),
+  sourceKey: reward.sourceKey,
+  periodKey: reward.periodKey,
+  xp: reward.xp,
+  levelBefore: reward.levelBefore,
+  levelAfter: reward.levelAfter,
+});
+
+const mapClaimRewardResult = (
+  result: RawClaimRewardResponse,
+): ClaimRewardResult => ({
+  reward: mapClaimedReward(result.reward),
+  progression: mapProgression(result.progression),
 });
 
 export const plinkoApi = {
@@ -136,5 +299,25 @@ export const plinkoApi = {
     };
 
     return result;
+  },
+
+  async getProgression() {
+    const { data } =
+      await apiClient.get<RawProgressionResponse>("/progression/me");
+    return mapProgression(data);
+  },
+
+  async claimDailyReward() {
+    const { data } = await apiClient.post<RawClaimRewardResponse>(
+      "/progression/daily/claim",
+    );
+    return mapClaimRewardResult(data);
+  },
+
+  async claimMissionReward(missionId: string) {
+    const { data } = await apiClient.post<RawClaimRewardResponse>(
+      `/progression/missions/${missionId}/claim`,
+    );
+    return mapClaimRewardResult(data);
   },
 };

@@ -31,9 +31,10 @@ const forwardHeaders = (request: Request) => {
 
 export const proxyApiRequest = async (request: Request, path: string) => {
   const targetUrl = buildTargetUrl(request, path);
-  const body = METHODS_WITH_BODY.has(request.method)
+  const requestBody = METHODS_WITH_BODY.has(request.method)
     ? await request.text()
-    : undefined;
+    : "";
+  const body = requestBody.length > 0 ? requestBody : undefined;
 
   try {
     const response = await fetch(targetUrl, {
