@@ -8,6 +8,6 @@ interface BetModeState {
 }
 
 export const useBetModeStore = create<BetModeState>((set) => ({
-  mode: "auto",
+  mode: "manual",
   setMode: (mode) => set({ mode }),
 }));
