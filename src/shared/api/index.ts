@@ -55,6 +55,13 @@ const refreshAccessToken = async () => {
 apiClient.interceptors.request.use((config) => {
   const token = typeof window !== "undefined" ? getCookie("accessToken") : null;
 
+  if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+    config.headers.delete?.("Content-Type");
+    config.headers.delete?.("content-type");
+    delete config.headers["Content-Type"];
+    delete config.headers["content-type"];
+  }
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -14,11 +14,29 @@ import type { RiskLevel } from "@/shared/config";
 import { fromMinimalUnits, toMinimalUnits } from "@/shared/lib";
 import { apiClient } from "./index";
 
-interface RawUserResponse {
+interface RawUserProgressionResponse {
+  level: number;
+  xp: number;
+  xpForCurrentLevel: number;
+  xpForNextLevel: number;
+  xpIntoCurrentLevel: number;
+  dailyStreak: number;
+}
+
+interface RawUserAccountResponse {
   id: string;
   email: string;
   balance: string;
   createdAt: string;
+}
+
+interface RawProfileResponse {
+  id: string;
+  email: string;
+  balance: string;
+  nickname: string;
+  avatarUrl: string | null;
+  progression: RawUserProgressionResponse;
 }
 
 interface RawGameConfigResponse {
@@ -138,11 +156,24 @@ const riskToApiMap: Record<RiskLevel, ApiRiskLevel> = {
   high: "HIGH",
 };
 
-const mapUser = (user: RawUserResponse): User => ({
-  id: user.id,
-  email: user.email,
-  balance: fromMinimalUnits(user.balance),
-  createdAt: user.createdAt,
+const mapUser = (
+  profile: RawProfileResponse,
+  account?: RawUserAccountResponse,
+): User => ({
+  id: profile.id,
+  email: profile.email,
+  balance: fromMinimalUnits(profile.balance),
+  nickname: profile.nickname,
+  avatarUrl: profile.avatarUrl,
+  progression: {
+    level: profile.progression.level,
+    xp: profile.progression.xp,
+    xpForCurrentLevel: profile.progression.xpForCurrentLevel,
+    xpForNextLevel: profile.progression.xpForNextLevel,
+    xpIntoCurrentLevel: profile.progression.xpIntoCurrentLevel,
+    dailyStreak: profile.progression.dailyStreak,
+  },
+  createdAt: account?.createdAt,
 });
 
 const mapGameConfig = (config: RawGameConfigResponse): GameConfig => ({
@@ -268,7 +299,34 @@ export const plinkoApi = {
   },
 
   async getCurrentUser() {
-    const { data } = await apiClient.get<RawUserResponse>("/users/me");
+    const [profileResponse, accountResponse] = await Promise.all([
+      apiClient.get<RawProfileResponse>("/profile/me"),
+      apiClient.get<RawUserAccountResponse>("/users/me"),
+    ]);
+
+    return mapUser(profileResponse.data, accountResponse.data);
+  },
+
+  async updateProfile(input: { nickname: string }) {
+    const { data } = await apiClient.patch<RawProfileResponse>(
+      "/profile/me",
+      {
+        nickname: input.nickname,
+      },
+    );
+
+    return mapUser(data);
+  },
+
+  async uploadAvatar(image: File) {
+    const formData = new FormData();
+    formData.append("image", image);
+
+    const { data } = await apiClient.post<RawProfileResponse>(
+      "/profile/avatar",
+      formData,
+    );
+
     return mapUser(data);
   },
 

@@ -1,6 +1,12 @@
 import type { PinRow } from "./gameBoardGeometry";
 
-export function PegField({ pinRows }: { pinRows: PinRow[] }) {
+export function PegField({
+  pinRows,
+  radius = 3.3,
+}: {
+  pinRows: PinRow[];
+  radius?: number;
+}) {
   return (
     <>
       {pinRows.flatMap((row) =>
@@ -9,7 +15,7 @@ export function PegField({ pinRows }: { pinRows: PinRow[] }) {
             key={pin.key}
             cx={pin.x}
             cy={pin.y}
-            r="3.3"
+            r={radius}
             fill="#8b95a7"
             opacity="0.9"
           />

@@ -1,1 +1,1 @@
-export { BetPanel } from "./ui/BetPanel";
+export { BetPanel, MobileBetPanel } from "./ui/BetPanel";

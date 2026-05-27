@@ -45,7 +45,7 @@ export function AppFooter({
   return (
     <footer
       className={[
-        "w-full border-t border-(--borderColor) bg-[#1a1f2e] px-2 pb-[max(env(safe-area-inset-bottom),8px)] ",
+        "w-full border-t border-(--borderColor) bg-[#1a1f2e] px-1 pb-[max(env(safe-area-inset-bottom),8px)] sm:px-2",
         className,
       ]
         .filter(Boolean)
@@ -53,7 +53,7 @@ export function AppFooter({
     >
       <nav
         aria-label="Bottom navigation"
-        className="mx-auto grid max-w-4xl grid-cols-4"
+        className="mx-auto grid max-w-4xl grid-cols-4 justify-items-center"
       >
         {items.map((item) => {
           const isActive = activeHref === item.href;
@@ -61,17 +61,17 @@ export function AppFooter({
           return (
             <div
               key={item.href}
-              className="relative w-12"
+              className="relative w-full max-w-18"
             >
               {isActive && (
-                <div className="w-full h-1 bg-(--colorAccess) rounded-bl-3xl rounded-br-3xl"></div>
+                <div className="mx-auto h-1 w-12 rounded-bl-3xl rounded-br-3xl bg-(--colorAccess)" />
               )}
 
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={isActive ? "page" : undefined}
-                className={`flex  min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-2 pb-1.5 transition-colors ${
+                className={`flex min-h-14 flex-col items-center justify-center gap-1 rounded-xl px-1 pb-1.5 transition-colors sm:px-2 ${
                   isActive ? "text-(--colorAccess)" : "text-(--text)"
                 }`}
               >
@@ -92,7 +92,7 @@ export function AppFooter({
                     WebkitMaskSize: "contain",
                   }}
                 />
-                <span className="text-[16px] font-medium leading-none">
+                <span className="text-[12px] font-medium leading-none sm:text-[16px]">
                   {item.label}
                 </span>
               </Link>

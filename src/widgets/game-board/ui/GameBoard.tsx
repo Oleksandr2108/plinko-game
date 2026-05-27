@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDropBallStore } from "@/features/drop-ball";
 import { useGameSettingsStore } from "@/features/game-settings";
@@ -10,7 +10,9 @@ import { AnimatedBall } from "./AnimatedBall";
 import {
   buildBallPath,
   buildPinRows,
+  DESKTOP_BOARD_LAYOUT,
   getSlotCenterX,
+  MOBILE_BOARD_LAYOUT,
 } from "./gameBoardGeometry";
 import { MultiplierSlots } from "./MultiplierSlots";
 import { PegField } from "./PegField";
@@ -21,7 +23,27 @@ const riskToApiMap = {
   high: "HIGH",
 } as const;
 
+const useMobileBoardLayout = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mediaQuery.matches);
+
+    update();
+    mediaQuery.addEventListener("change", update);
+
+    return () => mediaQuery.removeEventListener("change", update);
+  }, []);
+
+  return isMobile;
+};
+
 export function GameBoard() {
+  const isMobileLayout = useMobileBoardLayout();
+  const boardLayout = isMobileLayout
+    ? MOBILE_BOARD_LAYOUT
+    : DESKTOP_BOARD_LAYOUT;
   const rows = useSelectRiskStore((state) => state.rows);
   const risk = useSelectRiskStore((state) => state.risk);
   const activeDrops = useDropBallStore((state) => state.activeDrops);
@@ -43,12 +65,19 @@ export function GameBoard() {
     () => gameConfigQuery.data?.payoutTables[apiRisk]?.[String(rows)] ?? [],
     [apiRisk, gameConfigQuery.data, rows],
   );
-  const boardMetrics = useMemo(() => buildBallPath(rows), [rows]);
-  const slotCenters = useMemo(
-    () => multipliers.map((_, index) => getSlotCenterX(rows, index)),
-    [multipliers, rows],
+  const boardMetrics = useMemo(
+    () => buildBallPath(rows, boardLayout),
+    [boardLayout, rows],
   );
-  const pinRows = useMemo(() => buildPinRows(rows), [rows]);
+  const slotCenters = useMemo(
+    () =>
+      multipliers.map((_, index) => getSlotCenterX(rows, index, boardLayout)),
+    [boardLayout, multipliers, rows],
+  );
+  const pinRows = useMemo(
+    () => buildPinRows(rows, boardLayout),
+    [boardLayout, rows],
+  );
   const visibleDrops = useMemo(
     () => activeDrops.filter((drop) => drop.ball.rows === rows),
     [activeDrops, rows],
@@ -56,11 +85,11 @@ export function GameBoard() {
   const hasVisibleActiveDrop = visibleDrops.length > 0;
 
   return (
-    <section className="flex min-h-0 flex-1 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(30,38,56,0.45),rgba(15,20,25,0)_40%),rgba(17,22,30,0.94)] px-6 lg:px-10">
-      <div className="mx-auto flex w-full flex-1 flex-col justify-center overflow-hidden">
+    <section className="flex min-h-0 flex-1 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(30,38,56,0.45),rgba(15,20,25,0)_40%),rgba(17,22,30,0.94)] px-2 sm:px-6 lg:px-10">
+      <div className="mx-auto flex w-full flex-1 flex-col justify-start overflow-hidden pt-0 sm:justify-center sm:pt-0">
         <div className="mx-auto w-full max-w-6xl">
           <div
-            className="relative mx-auto w-full"
+            className="relative mx-auto w-full max-h-[calc(100dvh-244px)] sm:max-h-none"
             style={{
               maxWidth: `${boardMetrics.width}px`,
             }}
@@ -71,7 +100,10 @@ export function GameBoard() {
               preserveAspectRatio="xMidYMin meet"
               role="presentation"
             >
-              <PegField pinRows={pinRows} />
+              <PegField
+                pinRows={pinRows}
+                radius={isMobileLayout ? 3 : 3.3}
+              />
 
               <MultiplierSlots
                 multipliers={multipliers}
@@ -79,6 +111,8 @@ export function GameBoard() {
                 risk={risk}
                 slotCenters={slotCenters}
                 slotY={boardMetrics.slotY}
+                slotWidth={boardLayout.slotWidth}
+                slotHeight={boardLayout.slotHeight}
                 winningSlotIndex={
                   hasVisibleActiveDrop
                     ? undefined
@@ -94,6 +128,7 @@ export function GameBoard() {
                   slotIndex={drop.ball.slotIndex}
                   enabled={animationsEnabled}
                   delayMs={animationsEnabled ? drop.launchDelayMs : 0}
+                  layout={boardLayout}
                   onComplete={() => completeActiveDrop(drop.ball.id)}
                 />
               ))}

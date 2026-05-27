@@ -10,6 +10,54 @@ export const PEG_HOP_X = 16;
 export const PEG_HOP_Y = 8;
 export const SLOT_LANDING_OFFSET = 10;
 
+export interface BoardLayout {
+  paddingX: number;
+  paddingTop: number;
+  paddingBottom: number;
+  pinSpacingX: number;
+  pinSpacingY: number;
+  slotSpacing: number;
+  slotWidth: number;
+  slotHeight: number;
+  slotGapFromLastPin: number;
+  pegApproachY: number;
+  pegHopX: number;
+  pegHopY: number;
+  slotLandingOffset: number;
+}
+
+export const DESKTOP_BOARD_LAYOUT: BoardLayout = {
+  paddingX: BOARD_PADDING,
+  paddingTop: BOARD_PADDING,
+  paddingBottom: BOARD_PADDING,
+  pinSpacingX: SLOT_SPACING,
+  pinSpacingY: PIN_SPACING_Y,
+  slotSpacing: SLOT_SPACING,
+  slotWidth: SLOT_WIDTH,
+  slotHeight: SLOT_HEIGHT,
+  slotGapFromLastPin: PIN_SPACING_Y * 2 + BOARD_PADDING + SLOT_GAP,
+  pegApproachY: PEG_APPROACH_Y,
+  pegHopX: PEG_HOP_X,
+  pegHopY: PEG_HOP_Y,
+  slotLandingOffset: SLOT_LANDING_OFFSET,
+};
+
+export const MOBILE_BOARD_LAYOUT: BoardLayout = {
+  paddingX: 0,
+  paddingTop: 56,
+  paddingBottom: 0,
+  pinSpacingX: 28,
+  pinSpacingY: 35,
+  slotSpacing: 39,
+  slotWidth: 37,
+  slotHeight: 26,
+  slotGapFromLastPin: 68,
+  pegApproachY: 10,
+  pegHopX: 9,
+  pegHopY: 8,
+  slotLandingOffset: 10,
+};
+
 export interface BoardMetrics {
   width: number;
   height: number;
@@ -62,40 +110,59 @@ export const getSlotTone = (value: number): SlotTone => {
   };
 };
 
-export const buildBallPath = (rows: number): BoardMetrics => {
-  const horizontalInset = BOARD_PADDING + SLOT_WIDTH / 2;
-  const width = rows * SLOT_SPACING + horizontalInset * 2;
-  const pyramidHeight = (rows + 1) * PIN_SPACING_Y + BOARD_PADDING * 2;
-  const slotY = pyramidHeight + SLOT_GAP;
-  const height = slotY + SLOT_HEIGHT + BOARD_PADDING;
+export const buildBallPath = (
+  rows: number,
+  layout: BoardLayout = DESKTOP_BOARD_LAYOUT,
+): BoardMetrics => {
+  const horizontalInset = layout.paddingX + layout.slotWidth / 2;
+  const width = rows * layout.slotSpacing + horizontalInset * 2;
+  const lastPinY = layout.paddingTop + Math.max(rows - 1, 0) * layout.pinSpacingY;
+  const slotY = lastPinY + layout.slotGapFromLastPin;
+  const pyramidHeight = slotY;
+  const height = slotY + layout.slotHeight + layout.paddingBottom;
 
   return { width, height, pyramidHeight, slotY };
 };
 
-export const getSlotCenterX = (rows: number, slotIndex: number) => {
-  const { width } = buildBallPath(rows);
+export const getSlotCenterX = (
+  rows: number,
+  slotIndex: number,
+  layout: BoardLayout = DESKTOP_BOARD_LAYOUT,
+) => {
+  const { width } = buildBallPath(rows, layout);
 
-  return width / 2 - (rows * SLOT_SPACING) / 2 + slotIndex * SLOT_SPACING;
+  return width / 2 - (rows * layout.slotSpacing) / 2 + slotIndex * layout.slotSpacing;
 };
 
-export const getPinX = (rows: number, rowIndex: number, pinIndex: number) => {
-  const { width } = buildBallPath(rows);
+export const getPinX = (
+  rows: number,
+  rowIndex: number,
+  pinIndex: number,
+  layout: BoardLayout = DESKTOP_BOARD_LAYOUT,
+) => {
+  const { width } = buildBallPath(rows, layout);
   const pinCount = rowIndex + 2;
-  const startX = width / 2 - ((pinCount - 1) * SLOT_SPACING) / 2;
+  const startX = width / 2 - ((pinCount - 1) * layout.pinSpacingX) / 2;
 
-  return startX + pinIndex * SLOT_SPACING;
+  return startX + pinIndex * layout.pinSpacingX;
 };
 
-export const getPinY = (rowIndex: number) => {
-  return BOARD_PADDING + rowIndex * PIN_SPACING_Y;
+export const getPinY = (
+  rowIndex: number,
+  layout: BoardLayout = DESKTOP_BOARD_LAYOUT,
+) => {
+  return layout.paddingTop + rowIndex * layout.pinSpacingY;
 };
 
-export const buildPinRows = (rows: number): PinRow[] => {
+export const buildPinRows = (
+  rows: number,
+  layout: BoardLayout = DESKTOP_BOARD_LAYOUT,
+): PinRow[] => {
   return Array.from({ length: rows }, (_, rowIndex) => ({
     rowIndex,
     pins: Array.from({ length: rowIndex + 2 }, (_, pinIndex) => ({
-      x: getPinX(rows, rowIndex, pinIndex),
-      y: getPinY(rowIndex),
+      x: getPinX(rows, rowIndex, pinIndex, layout),
+      y: getPinY(rowIndex, layout),
       key: `${rowIndex}-${pinIndex}`,
     })),
   }));
@@ -105,9 +172,10 @@ export const getBallKeyframes = (
   rows: number,
   path: string,
   slotIndex?: number,
+  layout: BoardLayout = DESKTOP_BOARD_LAYOUT,
 ) => {
-  const { width, slotY } = buildBallPath(rows);
-  const points = [{ x: width / 2, y: BOARD_PADDING - PIN_SPACING_Y * 0.8 }];
+  const { width, slotY } = buildBallPath(rows, layout);
+  const points = [{ x: width / 2, y: layout.paddingTop - layout.pinSpacingY * 0.8 }];
   let offset = 0;
 
   path
@@ -123,29 +191,29 @@ export const getBallKeyframes = (
         : horizontalDirection;
 
       offset += direction === "R" ? 1 : -1;
-      const pegX = width / 2 + offset * (SLOT_SPACING / 2);
-      const pegY = getPinY(rowIndex);
+      const pegX = width / 2 + offset * (layout.pinSpacingX / 2);
+      const pegY = getPinY(rowIndex, layout);
 
       points.push({
         x: pegX - horizontalDirection * 6,
-        y: pegY - PEG_APPROACH_Y,
+        y: pegY - layout.pegApproachY,
       });
       points.push({
         x: pegX,
         y: pegY,
       });
       points.push({
-        x: pegX + hopDirection * PEG_HOP_X,
-        y: pegY - PEG_HOP_Y,
+        x: pegX + hopDirection * layout.pegHopX,
+        y: pegY - layout.pegHopY,
       });
     });
 
   points.push({
     x:
       typeof slotIndex === "number"
-        ? getSlotCenterX(rows, slotIndex)
-        : width / 2 + offset * (SLOT_SPACING / 2),
-    y: slotY - SLOT_LANDING_OFFSET,
+        ? getSlotCenterX(rows, slotIndex, layout)
+        : width / 2 + offset * (layout.pinSpacingX / 2),
+    y: slotY - layout.slotLandingOffset,
   });
 
   return points;

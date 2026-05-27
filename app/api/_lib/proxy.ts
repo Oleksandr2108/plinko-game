@@ -13,7 +13,11 @@ const buildTargetUrl = (request: Request, path: string) => {
   return targetUrl;
 };
 
-const forwardHeaders = (request: Request) => {
+const forwardHeaders = (
+  request: Request,
+  options: { includeContentType?: boolean } = {},
+) => {
+  const { includeContentType = true } = options;
   const headers = new Headers();
   const authorization = request.headers.get("authorization");
   const contentType = request.headers.get("content-type");
@@ -22,7 +26,7 @@ const forwardHeaders = (request: Request) => {
     headers.set("authorization", authorization);
   }
 
-  if (contentType) {
+  if (includeContentType && contentType) {
     headers.set("content-type", contentType);
   }
 
@@ -31,15 +35,27 @@ const forwardHeaders = (request: Request) => {
 
 export const proxyApiRequest = async (request: Request, path: string) => {
   const targetUrl = buildTargetUrl(request, path);
-  const requestBody = METHODS_WITH_BODY.has(request.method)
-    ? await request.text()
-    : "";
-  const body = requestBody.length > 0 ? requestBody : undefined;
+  const contentType = request.headers.get("content-type") ?? "";
+  const isMultipart = contentType
+    .toLowerCase()
+    .startsWith("multipart/form-data");
+  let body: BodyInit | undefined;
+
+  if (METHODS_WITH_BODY.has(request.method)) {
+    if (isMultipart) {
+      body = await request.formData();
+    } else {
+      const requestBody = await request.arrayBuffer();
+      body = requestBody.byteLength > 0 ? requestBody : undefined;
+    }
+  }
 
   try {
     const response = await fetch(targetUrl, {
       method: request.method,
-      headers: forwardHeaders(request),
+      headers: forwardHeaders(request, {
+        includeContentType: !isMultipart,
+      }),
       body,
       cache: "no-store",
     });

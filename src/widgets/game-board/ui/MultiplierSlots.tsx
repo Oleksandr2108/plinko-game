@@ -1,6 +1,7 @@
 import {
   formatMultiplier,
   getSlotTone,
+  DESKTOP_BOARD_LAYOUT,
   SLOT_HEIGHT,
   SLOT_WIDTH,
 } from "./gameBoardGeometry";
@@ -11,6 +12,8 @@ export function MultiplierSlots({
   risk,
   slotCenters,
   slotY,
+  slotWidth = SLOT_WIDTH,
+  slotHeight = SLOT_HEIGHT,
   winningSlotIndex,
 }: {
   multipliers: number[];
@@ -18,6 +21,8 @@ export function MultiplierSlots({
   risk: "low" | "medium" | "high";
   slotCenters: number[];
   slotY: number;
+  slotWidth?: number;
+  slotHeight?: number;
   winningSlotIndex?: number;
 }) {
   return (
@@ -30,15 +35,15 @@ export function MultiplierSlots({
         return (
           <g
             key={`${rows}-${risk}-${index}`}
-            transform={`translate(${slotCenterX - SLOT_WIDTH / 2} ${slotY})`}
+            transform={`translate(${slotCenterX - slotWidth / 2} ${slotY})`}
           >
             <rect
               x="0"
               y="0"
-              rx="8"
-              ry="8"
-              width={SLOT_WIDTH}
-              height={SLOT_HEIGHT}
+              rx={slotWidth < DESKTOP_BOARD_LAYOUT.slotWidth ? 4 : 8}
+              ry={slotWidth < DESKTOP_BOARD_LAYOUT.slotWidth ? 4 : 8}
+              width={slotWidth}
+              height={slotHeight}
               fill={tone.fill}
               stroke={tone.stroke}
               strokeWidth={isWinningSlot ? 2 : 1}
@@ -49,18 +54,18 @@ export function MultiplierSlots({
                 y="-2"
                 rx="10"
                 ry="10"
-                width={SLOT_WIDTH + 4}
-                height={SLOT_HEIGHT + 4}
+                width={slotWidth + 4}
+                height={slotHeight + 4}
                 fill="none"
                 stroke="rgba(255,255,255,0.28)"
                 strokeWidth="1"
               />
             ) : null}
             <text
-              x={SLOT_WIDTH / 2}
-              y={SLOT_HEIGHT / 2 + 4}
+              x={slotWidth / 2}
+              y={slotHeight / 2 + 4}
               textAnchor="middle"
-              fontSize="11"
+              fontSize={slotWidth < DESKTOP_BOARD_LAYOUT.slotWidth ? 12 : 11}
               fontWeight="600"
               fill={tone.text}
             >

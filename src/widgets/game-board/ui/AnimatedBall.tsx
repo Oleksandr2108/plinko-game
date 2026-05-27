@@ -3,7 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useGameSettingsStore } from "@/features/game-settings";
 import { playBallTickSound, playProfitSound } from "@/shared/lib";
-import { BALL_STEP_MS, getBallKeyframes } from "./gameBoardGeometry";
+import {
+  BALL_STEP_MS,
+  DESKTOP_BOARD_LAYOUT,
+  getBallKeyframes,
+  type BoardLayout,
+} from "./gameBoardGeometry";
 
 export function AnimatedBall({
   rows,
@@ -11,6 +16,7 @@ export function AnimatedBall({
   slotIndex,
   enabled = true,
   delayMs = 0,
+  layout = DESKTOP_BOARD_LAYOUT,
   onComplete,
 }: {
   rows: number;
@@ -18,11 +24,12 @@ export function AnimatedBall({
   slotIndex?: number;
   enabled?: boolean;
   delayMs?: number;
+  layout?: BoardLayout;
   onComplete?: () => void;
 }) {
   const frames = useMemo(
-    () => getBallKeyframes(rows, path, slotIndex),
-    [path, rows, slotIndex],
+    () => getBallKeyframes(rows, path, slotIndex, layout),
+    [layout, path, rows, slotIndex],
   );
   const soundEnabled = useGameSettingsStore((state) => state.soundEnabled);
   const [animatedFrameIndex, setAnimatedFrameIndex] = useState(0);
