@@ -41,7 +41,7 @@ export function BetHistoryPage() {
   return (
     <main className="min-h-full">
       <div>
-        <div className="mx-auto flex w-full max-w-310 flex-col gap-3 px-3 py-3 sm:px-4 lg:py-4">
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 px-3 py-3 sm:px-4 lg:py-4">
           <BetHistoryFilters
             riskFilter={riskFilter}
             rowsFilter={rowsFilter}
