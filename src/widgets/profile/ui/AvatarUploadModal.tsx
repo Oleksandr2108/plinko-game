@@ -3,7 +3,6 @@
 import {
   type ChangeEvent,
   type DragEvent,
-  useEffect,
   useRef,
   useState,
 } from "react";
@@ -21,20 +20,31 @@ export function AvatarUploadModal({
   onClose: () => void;
   onUpload: (file: File) => Promise<void> | void;
 }) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedFile(null);
-      setError("");
-    }
-  }, [isOpen]);
-
   if (!isOpen) {
     return null;
   }
+
+  return (
+    <AvatarUploadDialog
+      isPending={isPending}
+      onClose={onClose}
+      onUpload={onUpload}
+    />
+  );
+}
+
+function AvatarUploadDialog({
+  isPending,
+  onClose,
+  onUpload,
+}: {
+  isPending: boolean;
+  onClose: () => void;
+  onUpload: (file: File) => Promise<void> | void;
+}) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [error, setError] = useState("");
 
   const selectFile = (file?: File) => {
     setError("");

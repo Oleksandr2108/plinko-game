@@ -35,7 +35,7 @@ const extractMessages = (error: unknown) => {
 export async function register(dto: RegisterDto) {
   const data = await authApi.register(dto);
   persistTokens(data.accessToken, data.refreshToken);
-  useUserStore.getState().setUser({ ...data.user, balance: 0 });
+  useUserStore.getState().setUser(null);
   return data;
 }
 
