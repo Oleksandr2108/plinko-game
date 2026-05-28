@@ -20,11 +20,16 @@ export function Header() {
     router.push("/login");
   }
 
+  function handleOpenMenu() {
+    window.dispatchEvent(new Event("open-mobile-bet-panel"));
+  }
+
   return (
     <header className="flex h-16 w-full items-center justify-between gap-3 border-b border-(--borderColor) px-4">
       <div className="flex min-w-0 items-center gap-3 sm:gap-5">
         <button
           type="button"
+          onClick={handleOpenMenu}
           aria-label="Open menu"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] text-(--secondaryText) md:hidden"
         >

@@ -6,7 +6,6 @@ import { useBetHistory } from "../model/useBetHistory";
 import { BetHistoryCard } from "./BetHistoryCard";
 import { BetHistoryFilters } from "./BetHistoryFilters";
 import { BetHistoryPagination } from "./BetHistoryPagination";
-import { BetHistoryToolbar } from "./BetHistoryToolbar";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -42,8 +41,6 @@ export function BetHistoryPage() {
   return (
     <main className="min-h-full">
       <div className=" ">
-        <BetHistoryToolbar />
-
         <div className="mx-auto flex w-full max-w-310 flex-col gap-3 px-4 py-3 lg:py-4">
           <BetHistoryFilters
             riskFilter={riskFilter}

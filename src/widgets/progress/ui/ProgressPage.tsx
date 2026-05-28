@@ -7,7 +7,6 @@ import StarterMissionsIcon from "../../../../public/icons/progress_StarterMissio
 import { DailyRewardCard } from "./DailyRewardCard";
 import { LevelCard } from "./LevelCard";
 import { MissionSection } from "./MissionSection";
-import { ProgressToolbar } from "./ProgressToolbar";
 
 export function ProgressPage() {
   const progressionQuery = useQuery({
@@ -17,7 +16,6 @@ export function ProgressPage() {
 
   return (
     <main className="min-h-full">
-      <ProgressToolbar />
       <div className="mx-auto flex w-[calc(100%-32px)] max-w-[864px] flex-col gap-4 py-4">
         {progressionQuery.isLoading ? (
           <p className="px-2 text-sm text-(--text)">Loading progress...</p>

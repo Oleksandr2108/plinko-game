@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
 import { ProfileStatCard } from "./ProfileStatCard";
 import { ProfileSummaryCard } from "./ProfileSummaryCard";
-import { ProfileToolbar } from "./ProfileToolbar";
 import { formatMemberSince, xpFormatter } from "./profileFormat";
 
 export function ProfilePage() {
@@ -19,7 +18,6 @@ export function ProfilePage() {
 
   return (
     <main className="min-h-full bg-[#11161e]">
-      <ProfileToolbar />
       <div className="mx-auto flex w-[calc(100%-32px)] max-w-[864px] flex-col gap-4 py-4">
         {isLoading ? (
           <p className="rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] p-4 text-[14px] text-(--text)">
