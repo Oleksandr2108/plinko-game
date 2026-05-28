@@ -1,5 +1,15 @@
 <!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# Project instructions
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+Use the react-next-project-audit skill when reviewing or refactoring this project.
+
+## Rules
+
+- Do not rewrite the whole project at once.
+- Refactor in small safe commits/steps.
+- Preserve current behavior.
+- Run lint, typecheck, and build after changes.
+- Ask before adding new dependencies.
+- Prefer TypeScript-safe solutions.
+- For Next.js, keep server/client components separated correctly.
 <!-- END:nextjs-agent-rules -->
