@@ -1,5 +1,6 @@
 "use client";
 
+import { useShallow } from "zustand/react/shallow";
 import { useUserStore } from "@/entities/user";
 import { usePlaceBetStore } from "../model/store";
 
@@ -23,9 +24,13 @@ export function BetAmountActionsButtons({
 }
 
 export function BetAmountActions() {
-  const halveAmount = usePlaceBetStore((state) => state.halveAmount);
-  const doubleAmount = usePlaceBetStore((state) => state.doubleAmount);
-  const setMaxAmount = usePlaceBetStore((state) => state.setMaxAmount);
+  const [halveAmount, doubleAmount, setMaxAmount] = usePlaceBetStore(
+    useShallow((state) => [
+      state.halveAmount,
+      state.doubleAmount,
+      state.setMaxAmount,
+    ]),
+  );
   const balance = useUserStore((state) => state.user?.balance ?? 0);
 
   return (

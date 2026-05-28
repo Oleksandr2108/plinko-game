@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useShallow } from "zustand/react/shallow";
 import { useDropBallStore } from "@/features/drop-ball";
 import { useGameSettingsStore } from "@/features/game-settings";
 import { useSelectRiskStore } from "@/features/select-risk";
@@ -44,12 +45,15 @@ export function GameBoard() {
   const boardLayout = isMobileLayout
     ? MOBILE_BOARD_LAYOUT
     : DESKTOP_BOARD_LAYOUT;
-  const rows = useSelectRiskStore((state) => state.rows);
-  const risk = useSelectRiskStore((state) => state.risk);
-  const activeDrops = useDropBallStore((state) => state.activeDrops);
-  const settledSlotIndex = useDropBallStore((state) => state.settledSlotIndex);
-  const completeActiveDrop = useDropBallStore(
-    (state) => state.completeActiveDrop,
+  const [rows, risk] = useSelectRiskStore(
+    useShallow((state) => [state.rows, state.risk]),
+  );
+  const [activeDrops, settledSlotIndex, completeActiveDrop] = useDropBallStore(
+    useShallow((state) => [
+      state.activeDrops,
+      state.settledSlotIndex,
+      state.completeActiveDrop,
+    ]),
   );
   const animationsEnabled = useGameSettingsStore(
     (state) => state.animationsEnabled,

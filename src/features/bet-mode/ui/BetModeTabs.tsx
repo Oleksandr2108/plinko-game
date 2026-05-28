@@ -1,12 +1,14 @@
 "use client";
 
+import { useShallow } from "zustand/react/shallow";
 import { useBetModeStore, type BetMode } from "../model/store";
 
 const tabs: BetMode[] = ["manual", "auto"];
 
 export function BetModeTabs() {
-  const mode = useBetModeStore((state) => state.mode);
-  const setMode = useBetModeStore((state) => state.setMode);
+  const [mode, setMode] = useBetModeStore(
+    useShallow((state) => [state.mode, state.setMode]),
+  );
 
   return (
     <div className="grid grid-cols-2 gap-1 rounded-[14px]  bg-(--bgTab) p-1 h-9">

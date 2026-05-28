@@ -1,5 +1,6 @@
 "use client";
 
+import { useShallow } from "zustand/react/shallow";
 import { GAME_CONFIG } from "@/shared/config";
 import type { RiskLevel } from "@/shared/config";
 import { useSelectRiskStore } from "../model/store";
@@ -11,8 +12,9 @@ export function RiskSelector({
   levels?: RiskLevel[];
   disabled?: boolean;
 }) {
-  const risk = useSelectRiskStore((state) => state.risk);
-  const setRisk = useSelectRiskStore((state) => state.setRisk);
+  const [risk, setRisk] = useSelectRiskStore(
+    useShallow((state) => [state.risk, state.setRisk]),
+  );
   const riskLevels = levels ?? GAME_CONFIG.risk.levels;
 
   return (

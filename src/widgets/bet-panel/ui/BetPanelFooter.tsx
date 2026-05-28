@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useShallow } from "zustand/react/shallow";
 import { useGameSettingsStore } from "@/features/game-settings";
 
 import IconFullScreen from "../../../../public/icons/fullScreenIcon.svg";
@@ -10,15 +11,18 @@ import { BetPanelSettingsModal } from "./BetPanelSettingsModal";
 
 export function BetPanelFooter() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const soundEnabled = useGameSettingsStore((state) => state.soundEnabled);
-  const animationsEnabled = useGameSettingsStore(
-    (state) => state.animationsEnabled,
-  );
-  const setSoundEnabled = useGameSettingsStore(
-    (state) => state.setSoundEnabled,
-  );
-  const setAnimationsEnabled = useGameSettingsStore(
-    (state) => state.setAnimationsEnabled,
+  const [
+    soundEnabled,
+    animationsEnabled,
+    setSoundEnabled,
+    setAnimationsEnabled,
+  ] = useGameSettingsStore(
+    useShallow((state) => [
+      state.soundEnabled,
+      state.animationsEnabled,
+      state.setSoundEnabled,
+      state.setAnimationsEnabled,
+    ]),
   );
 
   const toggleFullscreen = async () => {

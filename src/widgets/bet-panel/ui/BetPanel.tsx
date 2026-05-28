@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useShallow } from "zustand/react/shallow";
 import { AutoBetForm } from "@/features/auto-bet";
 import { BetModeTabs, useBetModeStore } from "@/features/bet-mode";
 import { DropBallButton, useDropBallStore } from "@/features/drop-ball";
@@ -150,8 +151,9 @@ function MobileBetDock({
 }) {
   const mode = useBetModeStore((state) => state.mode);
   const amount = usePlaceBetStore((state) => state.amount);
-  const risk = useSelectRiskStore((state) => state.risk);
-  const rows = useSelectRiskStore((state) => state.rows);
+  const [risk, rows] = useSelectRiskStore(
+    useShallow((state) => [state.risk, state.rows]),
+  );
   const {
     isAutoSubmitting,
     isManualSubmitting,
@@ -197,7 +199,7 @@ function MobileBetDock({
           />
         </button>
         <p className="min-w-0 truncate text-[12px] leading-4 text-(--text)">
-          {amountFormatter.format(amount)} • {risk.toUpperCase()} • {rows} rows
+          {amountFormatter.format(amount)} / {risk.toUpperCase()} / {rows} rows
         </p>
       </div>
       <button

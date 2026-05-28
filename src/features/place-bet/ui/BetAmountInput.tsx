@@ -1,11 +1,13 @@
 "use client";
 
+import { useShallow } from "zustand/react/shallow";
 import { BalanceBadge } from "@/entities/user";
 import { usePlaceBetStore } from "../model/store";
 
 export function BetAmountInput() {
-  const amount = usePlaceBetStore((state) => state.amount);
-  const setAmount = usePlaceBetStore((state) => state.setAmount);
+  const [amount, setAmount] = usePlaceBetStore(
+    useShallow((state) => [state.amount, state.setAmount]),
+  );
 
   return (
     <div className="space-y-3">

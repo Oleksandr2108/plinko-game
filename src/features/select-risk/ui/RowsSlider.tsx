@@ -1,5 +1,6 @@
 "use client";
 
+import { useShallow } from "zustand/react/shallow";
 import { GAME_CONFIG } from "@/shared/config";
 import { useSelectRiskStore } from "../model/store";
 
@@ -12,8 +13,9 @@ export function RowsSlider({
   maxRows?: number;
   disabled?: boolean;
 }) {
-  const rows = useSelectRiskStore((state) => state.rows);
-  const setRows = useSelectRiskStore((state) => state.setRows);
+  const [rows, setRows] = useSelectRiskStore(
+    useShallow((state) => [state.rows, state.setRows]),
+  );
   const progress =
     maxRows === minRows ? 100 : ((rows - minRows) / (maxRows - minRows)) * 100;
 

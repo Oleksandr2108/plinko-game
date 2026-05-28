@@ -4,6 +4,7 @@ import { useEffect, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import type { Ball } from "@/entities/ball";
+import type { Bet } from "@/entities/bet";
 import { useUserStore } from "@/entities/user";
 import { useAutoBetStore } from "@/features/auto-bet";
 import { useDropBallStore } from "@/features/drop-ball";
@@ -11,15 +12,7 @@ import { usePlaceBetStore } from "@/features/place-bet";
 import { useSelectRiskStore } from "@/features/select-risk";
 import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
 
-const mapBetToBall = (bet: {
-  betId: string;
-  bucketIndex: number;
-  multiplier: number;
-  amount: number;
-  payout: number;
-  path: string;
-  rows: number;
-}): Ball => ({
+const mapBetToBall = (bet: Bet): Ball => ({
   id: bet.betId,
   slotIndex: bet.bucketIndex,
   multiplier: bet.multiplier,
@@ -51,16 +44,7 @@ const buildBetInput = () => ({
   risk: useSelectRiskStore.getState().risk,
 });
 
-const applyBetResult = (bet: {
-  betId: string;
-  bucketIndex: number;
-  multiplier: number;
-  amount: number;
-  payout: number;
-  path: string;
-  rows: number;
-  balanceAfter: number;
-}) => {
+const applyBetResult = (bet: Bet) => {
   useDropBallStore.getState().enqueueResult(mapBetToBall(bet));
 };
 
@@ -247,7 +231,7 @@ export function useBetPanel(): UseBetPanelResult {
       gameConfigQuery.isLoading ||
       currentUserQuery.isLoading ||
       activeSeedQuery.isLoading,
-    isManualSubmitting: false,
+    isManualSubmitting: manualBetMutation.isPending,
     isAutoSubmitting: autoBetMutation.isPending,
     errorMessage,
     placeManualBet: async () => {
