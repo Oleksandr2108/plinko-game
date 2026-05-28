@@ -31,19 +31,19 @@ export function BetHistoryCard({ bet }: { bet: Bet }) {
 
   return (
     <article className="rounded-[10px] border border-(--borderColor) bg-[rgba(30,36,56,0.55)] px-3 py-3">
-      <div className="grid grid-cols-[1.6fr_1.4fr_0.8fr_0.8fr_0.8fr_0.8fr_1fr] items-center gap-3 text-[12px] text-(--text)">
-        <div>
+      <div className="grid grid-cols-2 gap-3 text-[12px] text-(--text) md:grid-cols-[1.6fr_1.4fr_0.8fr_0.8fr_0.8fr_0.8fr_1fr] md:items-center">
+        <div className="col-span-2 md:col-span-1">
           <p className="mb-1 text-[12px] text-(--colorSmallText)">Time</p>
-          <p className="text-[14px] text-(--secondaryText)">
+          <p className="text-[14px] text-(--secondaryText) md:whitespace-nowrap">
             {bet.createdAt
               ? dateFormatter.format(new Date(bet.createdAt))
               : "Unknown"}
           </p>
         </div>
 
-        <div>
+        <div className="col-span-2 md:col-span-1">
           <p className="mb-1 text-[12px] text-(--colorSmallText)">Settings</p>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-[14px] text-(--secondaryText)">
               {bet.rows} rows
             </span>
@@ -67,14 +67,14 @@ export function BetHistoryCard({ bet }: { bet: Bet }) {
 
         <div>
           <p className="mb-1 text-[12px] text-(--colorSmallText)">Bet Amount</p>
-          <p className="text-[14px] text-(--secondaryText)">
+          <p className="truncate text-[14px] text-(--secondaryText)">
             {numberFormatter.format(bet.amount)}
           </p>
         </div>
 
         <div>
           <p className="mb-1 text-[12px] text-(--colorSmallText)">Payout</p>
-          <p className="text-[14px] text-(--secondaryText)">
+          <p className="truncate text-[14px] text-(--secondaryText)">
             {numberFormatter.format(bet.payout)}
           </p>
         </div>
@@ -87,16 +87,17 @@ export function BetHistoryCard({ bet }: { bet: Bet }) {
           </p>
         </div>
 
-        <div className="text-right">
+        <div className="col-span-2 border-t border-(--borderColor) pt-3 md:col-span-1 md:border-t-0 md:pt-0 md:text-right">
           <p className="mb-1 text-[12px] text-(--colorSmallText)">
             Balance After
           </p>
-          <div className="inline-flex items-center gap-1">
+          <div className="inline-flex max-w-full items-center gap-1">
             <Image
               src={BetIcon}
               alt="Bet Icon"
+              className="h-4 w-4 shrink-0"
             />
-            <p className="text-[14px] text-(--secondaryText)">
+            <p className="truncate text-[14px] text-(--secondaryText)">
               {numberFormatter.format(bet.balanceAfter)}
             </p>
           </div>
