@@ -7,13 +7,13 @@ import { useRegister } from "@/features/auth/register/model/register";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
   const registerMutation = useRegister({
     onSuccess: () => {
       router.push("/");
     },
     onError: (messages) => {
-      setError(messages.join(" "));
+      setErrors(messages);
     },
   });
 
@@ -25,10 +25,10 @@ export default function RegisterPage() {
         btnText="Create Account"
         accaunt={false}
         textAccaunt="Already have an account?"
-        error={error}
+        errors={errors}
         isPending={registerMutation.isPending}
         onSubmit={async (data) => {
-          setError("");
+          setErrors([]);
           await registerMutation.mutateAsync(data);
         }}
       />

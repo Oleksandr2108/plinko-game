@@ -9,9 +9,31 @@ interface LoginData {
   accaunt: boolean;
   textAccaunt: string;
   error?: string;
+  errors?: string[];
   isPending?: boolean;
   onSubmit: (data: { email: string; password: string }) => Promise<void> | void;
 }
+
+const getInputClassName = (hasError: boolean) =>
+  [
+    "bg-(--inputBg) text-(--placeholderColor) text-[14px]",
+    "placeholder-(--placeholderColor) border rounded-lg w-full",
+    "py-1 px-3 mt-2 focus:outline-none",
+    hasError
+      ? "border-(--borderError) focus:border-(--colorError)"
+      : "border-(--borderColor)",
+  ].join(" ");
+
+const getFieldErrors = (messages: string[], field: "email" | "password") =>
+  messages.filter((message) => message.toLowerCase().includes(field));
+
+const isFieldErrorMessage = (message: string) => {
+  const normalizedMessage = message.toLowerCase();
+  return (
+    normalizedMessage.includes("email") ||
+    normalizedMessage.includes("password")
+  );
+};
 
 const LoginForm = (props: LoginData) => {
   const [localError, setLocalError] = useState("");
@@ -33,7 +55,19 @@ const LoginForm = (props: LoginData) => {
     }
   }
 
-  const errorMessage = props.error ?? localError;
+  const errorMessages =
+    props.errors ??
+    (props.error ? [props.error] : localError ? [localError] : []);
+  const genericErrors = errorMessages.filter(
+    (message) => !isFieldErrorMessage(message),
+  );
+  const emailErrors = getFieldErrors(errorMessages, "email");
+  const passwordErrors = getFieldErrors(errorMessages, "password");
+  const emailMessages = emailErrors.length > 0 ? emailErrors : genericErrors;
+  const passwordMessages =
+    passwordErrors.length > 0 ? passwordErrors : genericErrors;
+  const hasEmailError = emailMessages.length > 0;
+  const hasPasswordError = passwordMessages.length > 0;
 
   return (
     <div className="w-full  m-auto bg-(--foreground) border border-(--borderColor) rounded-2xl p-8">
@@ -62,12 +96,23 @@ const LoginForm = (props: LoginData) => {
           Email
         </label>
         <input
+          id="email"
           name="email"
           type="email"
           placeholder="your@email.com"
           required
-          className="bg-(--inputBg) text-(--placeholderColor) text-[14px] placeholder-(--placeholderColor) border border-(--borderColor) rounded-lg w-full py-1 px-3 mt-2 focus:outline-none "
+          aria-invalid={hasEmailError}
+          aria-describedby={hasEmailError ? "email-error" : undefined}
+          className={getInputClassName(hasEmailError)}
         />
+        {hasEmailError ? (
+          <p
+            id="email-error"
+            className="text-[12px] text-(--colorError) mt-1"
+          >
+            {emailMessages.join(" ")}
+          </p>
+        ) : null}
         <label
           htmlFor="password"
           className="text-[14px] font-medium text-(--secondaryText) mt-4 block"
@@ -76,19 +121,27 @@ const LoginForm = (props: LoginData) => {
           Password
         </label>
         <input
+          id="password"
           name="password"
           type="password"
           placeholder="your password"
           required
-          className="bg-(--inputBg) text-(--placeholderColor) text-[14px] placeholder-(--placeholderColor) border border-(--borderColor) rounded-lg w-full py-1 px-3 mt-2 focus:outline-none "
+          aria-invalid={hasPasswordError}
+          aria-describedby={hasPasswordError ? "password-error" : undefined}
+          className={getInputClassName(hasPasswordError)}
         />
+        {hasPasswordError ? (
+          <p
+            id="password-error"
+            className="text-[12px] text-(--colorError) mt-1"
+          >
+            {passwordMessages.join(" ")}
+          </p>
+        ) : null}
         {props.tip ? (
           <p className="text-[12px] text-(--colorSmallText) mt-1">
             {props.tip}
           </p>
-        ) : null}
-        {errorMessage ? (
-          <p className="text-[12px] text-red-400 mt-3">{errorMessage}</p>
         ) : null}
 
         <button

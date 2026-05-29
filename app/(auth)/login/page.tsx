@@ -7,13 +7,13 @@ import { useLogin } from "@/features/auth/login/model/login";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<string[]>([]);
   const loginMutation = useLogin({
     onSuccess: () => {
       router.push("/");
     },
     onError: (messages) => {
-      setError(messages.join(" "));
+      setErrors(messages);
     },
   });
 
@@ -24,10 +24,10 @@ export default function LoginPage() {
         btnText="Sign In"
         accaunt={true}
         textAccaunt="Don't have an account?"
-        error={error}
+        errors={errors}
         isPending={loginMutation.isPending}
         onSubmit={async (data) => {
-          setError("");
+          setErrors([]);
           await loginMutation.mutateAsync(data);
         }}
       />
