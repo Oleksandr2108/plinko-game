@@ -6,10 +6,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { User } from "@/entities/user";
 import { useUserStore } from "@/entities/user";
 import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
-import BetIcon from "../../../../public/icons/betIcon.svg";
+import AddAvatarIcon from "../../../../public/icons/profile_avatarIcon.svg";
 import ProgressIcon from "../../../../public/icons/progress_Level.svg";
-import StreakIcon from "../../../../public/icons/progress_DailyRewardStreak.svg";
 import { AvatarUploadModal } from "./AvatarUploadModal";
+
+import EditIcon from "../../../../public/icons/profile_edidIcon.svg";
+import LevelIcon from "../../../../public/icons/profile_levelIcon.svg";
+import StreakIcon from "../../../../public/icons/profile_streakIcon.svg";
 import {
   creditFormatter,
   getLevelProgressPercent,
@@ -96,11 +99,11 @@ export function ProfileSummaryCard({ user }: { user: User }) {
                   className="h-full w-full rounded-full object-cover"
                 />
               ) : (
-                user.nickname?.[0]?.toUpperCase() ?? "U"
+                (user.nickname?.[0]?.toUpperCase() ?? "U")
               )}
               <span className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#1a1f2e] bg-(--colorAccess)">
                 <Image
-                  src={BetIcon}
+                  src={AddAvatarIcon}
                   alt=""
                   aria-hidden="true"
                   className="h-4 w-4"
@@ -147,8 +150,15 @@ export function ProfileSummaryCard({ user }: { user: User }) {
                       setIsEditingNickname(true);
                     }}
                     aria-label="Edit nickname"
-                    className="relative h-5 w-5 text-(--text) before:absolute before:left-[3px] before:top-[12px] before:h-px before:w-3 before:rotate-[-45deg] before:bg-current after:absolute after:left-[8px] after:top-[5px] after:h-2 after:w-px after:rotate-45 after:bg-current"
-                  />
+                    className="cursor-pointer"
+                  >
+                    <Image
+                      src={EditIcon}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-4 w-4"
+                    />
+                  </button>
                 </div>
               )}
               <p className="mt-1 truncate text-[14px] text-(--text)">
@@ -157,7 +167,7 @@ export function ProfileSummaryCard({ user }: { user: User }) {
               <div className="mt-3 flex flex-wrap items-center gap-4 text-[12px] text-(--secondaryText)">
                 <span className="inline-flex items-center gap-1">
                   <Image
-                    src={ProgressIcon}
+                    src={LevelIcon}
                     alt=""
                     aria-hidden="true"
                     className="h-4 w-4"
@@ -181,7 +191,7 @@ export function ProfileSummaryCard({ user }: { user: User }) {
             <p className="text-[12px] text-(--colorSmallText)">Balance</p>
             <p className="mt-1 inline-flex items-center gap-1 text-[20px] font-bold text-(--colorAccess)">
               <Image
-                src={BetIcon}
+                src={AddAvatarIcon}
                 alt=""
                 aria-hidden="true"
                 className="h-4 w-4"

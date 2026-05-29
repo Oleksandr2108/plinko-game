@@ -17,7 +17,7 @@ export function ProfilePage() {
   });
 
   return (
-    <main className="min-h-full bg-[#11161e]">
+    <main className="min-h-full ">
       <div className="mx-auto flex w-[calc(100%-32px)] max-w-[864px] flex-col gap-4 py-4">
         {isLoading ? (
           <p className="rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] p-4 text-[14px] text-(--text)">

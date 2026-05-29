@@ -2,8 +2,6 @@
 
 import { useEffect, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { isAxiosError } from "axios";
-import type { Ball } from "@/entities/ball";
 import type { Bet } from "@/entities/bet";
 import { useUserStore } from "@/entities/user";
 import { useAutoBetStore } from "@/features/auto-bet";
@@ -11,32 +9,7 @@ import { useDropBallStore } from "@/features/drop-ball";
 import { usePlaceBetStore } from "@/features/place-bet";
 import { useSelectRiskStore } from "@/features/select-risk";
 import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
-
-const mapBetToBall = (bet: Bet): Ball => ({
-  id: bet.betId,
-  slotIndex: bet.bucketIndex,
-  multiplier: bet.multiplier,
-  betAmount: bet.amount,
-  payout: bet.payout,
-  path: bet.path,
-  rows: bet.rows,
-});
-
-const extractErrorMessage = (error: unknown) => {
-  if (isAxiosError<{ message?: string | string[] }>(error)) {
-    const message = error.response?.data?.message;
-
-    if (Array.isArray(message)) {
-      return message.join(" ");
-    }
-
-    if (typeof message === "string") {
-      return message;
-    }
-  }
-
-  return "Request failed. Please try again.";
-};
+import { extractBetPanelErrorMessage, mapBetToBall } from "./betPanelUtils";
 
 const buildBetInput = () => ({
   amount: usePlaceBetStore.getState().amount,
@@ -215,7 +188,7 @@ export function useBetPanel(): UseBetPanelResult {
       autoBetMutation.error,
     ]
       .filter(Boolean)
-      .map((error) => extractErrorMessage(error))[0];
+      .map((error) => extractBetPanelErrorMessage(error))[0];
   }, [
     activeSeedQuery.error,
     autoBetMutation.error,

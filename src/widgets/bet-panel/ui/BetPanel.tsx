@@ -12,7 +12,7 @@ import { useSelectRiskStore } from "@/features/select-risk/model/store";
 import { RiskSelector, RowsSlider } from "@/features/select-risk";
 import { useBetPanel } from "../model/useBetPanel";
 import { BetPanelFooter } from "./BetPanelFooter";
-import IconSettings from "../../../../public/icons/settingIcon.svg";
+import IconSettings from "../../../../public/icons/mobileBetIcon.svg";
 
 const amountFormatter = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
@@ -112,32 +112,47 @@ export function MobileBetPanel() {
         onOpen={() => setIsOpen(true)}
       />
 
-      {isOpen ? (
-        <div className="pointer-events-none fixed inset-0 z-40 md:hidden">
+      <div
+        className={[
+          "pointer-events-none fixed inset-0 z-40 transition-opacity duration-300 ease-out md:hidden",
+          isOpen ? "opacity-100" : "opacity-0",
+        ].join(" ")}
+        aria-hidden={!isOpen}
+        inert={!isOpen}
+      >
+        <button
+          type="button"
+          aria-label="Close bet panel"
+          onClick={() => setIsOpen(false)}
+          tabIndex={isOpen ? 0 : -1}
+          className={[
+            "absolute bottom-[65px] right-0 top-0 w-[max(46px,calc(100vw-319px))] bg-transparent",
+            isOpen ? "pointer-events-auto" : "pointer-events-none",
+          ].join(" ")}
+        />
+        <aside
+          className={[
+            "pointer-events-auto absolute bottom-[65px] left-0 top-0 flex w-[min(319px,calc(100vw-46px))] flex-col border-r border-(--borderColor) bg-[#1a1f2e] shadow-[18px_0_55px_rgba(0,0,0,0.42)] transition-transform duration-300 ease-out will-change-transform",
+            isOpen ? "translate-x-0" : "-translate-x-full",
+          ].join(" ")}
+        >
           <button
             type="button"
-            aria-label="Close bet panel"
             onClick={() => setIsOpen(false)}
-            className="pointer-events-auto absolute bottom-[65px] right-0 top-0 w-[max(46px,calc(100vw-319px))] bg-transparent"
-          />
-          <aside className="pointer-events-auto absolute bottom-[65px] left-0 top-0 flex w-[min(319px,calc(100vw-46px))] flex-col border-r border-(--borderColor) bg-[#1a1f2e] shadow-[18px_0_55px_rgba(0,0,0,0.42)]">
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              aria-label="Close bet panel"
-              className="absolute right-[-16px] top-4 z-10 flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#2a2f3e] text-[20px] leading-none text-(--secondaryText)"
-            >
-              x
-            </button>
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 pt-4">
-              <BetPanelContent showFooter={false} />
-            </div>
-            <div className="shrink-0 px-4">
-              <BetPanelFooter />
-            </div>
-          </aside>
-        </div>
-      ) : null}
+            aria-label="Close bet panel"
+            tabIndex={isOpen ? 0 : -1}
+            className="absolute right-[-16px] top-4 z-10 flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#2a2f3e] text-[20px] leading-none text-(--secondaryText)"
+          >
+            x
+          </button>
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 pt-4">
+            <BetPanelContent showFooter={false} />
+          </div>
+          <div className="shrink-0 px-4">
+            <BetPanelFooter />
+          </div>
+        </aside>
+      </div>
     </>
   );
 }
@@ -189,7 +204,7 @@ function MobileBetDock({
           type="button"
           onClick={onOpen}
           aria-label="Open bet panel"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[4px] bg-[#2a2f3e]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-[#2a2f3e]"
         >
           <Image
             src={IconSettings}
@@ -199,7 +214,7 @@ function MobileBetDock({
           />
         </button>
         <p className="min-w-0 truncate text-[12px] leading-4 text-(--text)">
-          {amountFormatter.format(amount)} / {risk.toUpperCase()} / {rows} rows
+          {amountFormatter.format(amount)} • {risk.toUpperCase()} • {rows} rows
         </p>
       </div>
       <button
