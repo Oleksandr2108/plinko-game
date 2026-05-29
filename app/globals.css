@@ -14,16 +14,44 @@
     #191e2c 88.89%,
     #1a1f2e 100%
   );
+  --bgPage: #11161e;
+  --bgSurface: #1a1f2e;
+  --bgSurfaceMuted: rgba(30, 36, 56, 0.55);
+  --bgSurfacePanel: rgba(26, 31, 46, 0.92);
+  --bgSurfaceToolbar: rgba(26, 31, 46, 0.95);
+  --bgSurfaceModal: rgba(26, 31, 46, 0.98);
+  --bgControl: #2a2f3e;
+  --bgTrack: #0d1118;
+  --bgBackdrop: rgba(5, 8, 14, 0.72);
+  --bgBackdropStrong: rgba(0, 0, 0, 0.6);
+  --bgGameBoard: radial-gradient(
+      circle at top,
+      rgba(30, 38, 56, 0.45),
+      rgba(15, 20, 25, 0) 40%
+    ),
+    rgba(17, 22, 30, 0.94);
   --foreground: hsla(225, 28%, 14%, 0.8);
-  --inputBg: hsla(0, 0%, 15%, 0.3);
   --text: #99a1af;
+  --colorWhite: #fff;
+  --spinnerBorder: rgba(255, 255, 255, 0.3);
+  --spinnerBorderActive: rgba(255, 255, 255, 0.7);
+  --colorPeg: #8b95a7;
+  --colorBall: #f8fafc;
+  --colorSlotStroke: rgba(255, 255, 255, 0.28);
+  --colorXp: #51a2ff;
+  --colorXpMuted: #5aa7ff;
   --buttonBg: linear-gradient(90deg, #00c950 0%, #096 100%);
+  --buttonStopBg: linear-gradient(90deg, #fb2c36 0%, #e7000b 100%);
   --colorAccess: #00c950;
   --bgAccess: rgba(0, 201, 80, 0.2);
+  --bgAccessHover: rgba(0, 201, 80, 0.35);
   --colorMedium: #f0b100;
   --bgMedium: rgba(240, 177, 0, 0.2);
+  --bgMediumHover: rgba(240, 177, 0, 0.35);
   --colorError: #fb2c36;
   --bgError: rgba(251, 44, 54, 0.2);
+  --bgErrorHover: rgba(251, 44, 54, 0.35);
+  --bgErrorSurface: #301b29;
   --borderColor: #2a2f3e;
   --borderError: #82181a;
   --placeholderColor: #a1a1a1;
@@ -35,7 +63,44 @@
   --bgTabActive: hsla(0, 0%, 15%, 0.3);
   --inputText: #a1a1a1;
   --inputBg: rgba(38, 38, 38, 0.3);
-  --bgSecondaryTab:#1a1f2e;
+  --bgSecondaryTab: #1a1f2e;
+  --shadowPanel: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --shadowPanelWide: 18px 0 55px rgba(0, 0, 0, 0.42);
+  --shadowPanelSoft: 0 25px 25px rgba(0, 0, 0, 0.25);
+  --shadowModal: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --shadowButton: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadowButtonStop:
+    0 4px 6px -4px rgba(0, 0, 0, 0.1),
+    0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadowFocusRing: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadowBallGlow: 0 0 12px rgba(255, 255, 255, 0.65);
+  --progressGradient: linear-gradient(90deg, #2b7fff 0%, #ad46ff 100%);
+  --missionCardBorder: rgba(43, 127, 255, 0.3);
+  --missionCardBg: linear-gradient(
+    135deg,
+    rgba(17, 35, 62, 0.9),
+    rgba(22, 43, 74, 0.72)
+  );
+  --missionIconBorder: rgba(43, 127, 255, 0.35);
+  --missionIconBg: rgba(43, 127, 255, 0.16);
+  --dailyRewardBorder: #66351d;
+  --dailyRewardCredits: #ffd21e;
+  --dailyRewardStreak: #ff8904;
+  --dailyRewardBg: radial-gradient(
+      circle at top right,
+      rgba(251, 44, 54, 0.16),
+      transparent 34%
+    ),
+    linear-gradient(135deg, rgba(38, 31, 28, 0.96), rgba(31, 20, 26, 0.92));
+  --dailyRewardButtonBg: linear-gradient(90deg, #ff6900 0%, #ff2d3f 100%);
+  --dailyRewardMutedBg: rgba(42, 47, 62, 0.72);
+  --avatarDropBorder: #34405a;
+  --avatarDropBorderHover: #4a5877;
+  --avatarDropBg: #1b2132;
+  --avatarCancelBg: #2a3144;
+  --avatarCancelBgHover: #343c52;
+  --avatarUploadBg: #087a56;
+  --avatarUploadBgHover: #099668;
 }
 
 @theme inline {
@@ -59,22 +124,98 @@
       #191e2c 88.89%,
       #1a1f2e 100%
     );
+    --bgPage: #11161e;
+    --bgSurface: #1a1f2e;
+    --bgSurfaceMuted: rgba(30, 36, 56, 0.55);
+    --bgSurfacePanel: rgba(26, 31, 46, 0.92);
+    --bgSurfaceToolbar: rgba(26, 31, 46, 0.95);
+    --bgSurfaceModal: rgba(26, 31, 46, 0.98);
+    --bgControl: #2a2f3e;
+    --bgTrack: #0d1118;
+    --bgBackdrop: rgba(5, 8, 14, 0.72);
+    --bgBackdropStrong: rgba(0, 0, 0, 0.6);
+    --bgGameBoard: radial-gradient(
+        circle at top,
+        rgba(30, 38, 56, 0.45),
+        rgba(15, 20, 25, 0) 40%
+      ),
+      rgba(17, 22, 30, 0.94);
     --foreground: rgba(26, 31, 46, 0.8);
     --inputBg: rgba(38, 38, 38, 0.3);
     --text: #99a1af;
+    --colorWhite: #fff;
+    --spinnerBorder: rgba(255, 255, 255, 0.3);
+    --spinnerBorderActive: rgba(255, 255, 255, 0.7);
+    --colorPeg: #8b95a7;
+    --colorBall: #f8fafc;
+    --colorSlotStroke: rgba(255, 255, 255, 0.28);
+    --colorXp: #51a2ff;
+    --colorXpMuted: #5aa7ff;
     --buttonBg: linear-gradient(90deg, #00c950 0%, #096 100%);
+    --buttonStopBg: linear-gradient(90deg, #fb2c36 0%, #e7000b 100%);
     --colorAccess: #00c950;
+    --bgAccess: rgba(0, 201, 80, 0.2);
+    --bgAccessHover: rgba(0, 201, 80, 0.35);
+    --colorMedium: #f0b100;
+    --bgMedium: rgba(240, 177, 0, 0.2);
+    --bgMediumHover: rgba(240, 177, 0, 0.35);
     --colorError: #fb2c36;
+    --bgError: rgba(251, 44, 54, 0.2);
+    --bgErrorHover: rgba(251, 44, 54, 0.35);
+    --bgErrorSurface: #301b29;
     --borderColor: #2a2f3e;
     --borderError: #82181a;
     --placeholderColor: #a1a1a1;
+    --activeTabText: #fafafa;
     --secondaryText: #d1d5dc;
     --colorSmallText: #6a7282;
+    --bgTab: #0f1419;
+    --borderTab: #262626;
+    --bgTabActive: hsla(0, 0%, 15%, 0.3);
+    --inputText: #a1a1a1;
+    --bgSecondaryTab: #1a1f2e;
+    --shadowPanel: 0 18px 40px rgba(0, 0, 0, 0.35);
+    --shadowPanelWide: 18px 0 55px rgba(0, 0, 0, 0.42);
+    --shadowPanelSoft: 0 25px 25px rgba(0, 0, 0, 0.25);
+    --shadowModal: 0 24px 80px rgba(0, 0, 0, 0.45);
+    --shadowButton: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadowButtonStop:
+      0 4px 6px -4px rgba(0, 0, 0, 0.1),
+      0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadowFocusRing: 0 0 0 1px rgba(255, 255, 255, 0.08);
+    --shadowBallGlow: 0 0 12px rgba(255, 255, 255, 0.65);
+    --progressGradient: linear-gradient(90deg, #2b7fff 0%, #ad46ff 100%);
+    --missionCardBorder: rgba(43, 127, 255, 0.3);
+    --missionCardBg: linear-gradient(
+      135deg,
+      rgba(17, 35, 62, 0.9),
+      rgba(22, 43, 74, 0.72)
+    );
+    --missionIconBorder: rgba(43, 127, 255, 0.35);
+    --missionIconBg: rgba(43, 127, 255, 0.16);
+    --dailyRewardBorder: #66351d;
+    --dailyRewardCredits: #ffd21e;
+    --dailyRewardStreak: #ff8904;
+    --dailyRewardBg: radial-gradient(
+        circle at top right,
+        rgba(251, 44, 54, 0.16),
+        transparent 34%
+      ),
+      linear-gradient(135deg, rgba(38, 31, 28, 0.96), rgba(31, 20, 26, 0.92));
+    --dailyRewardButtonBg: linear-gradient(90deg, #ff6900 0%, #ff2d3f 100%);
+    --dailyRewardMutedBg: rgba(42, 47, 62, 0.72);
+    --avatarDropBorder: #34405a;
+    --avatarDropBorderHover: #4a5877;
+    --avatarDropBg: #1b2132;
+    --avatarCancelBg: #2a3144;
+    --avatarCancelBgHover: #343c52;
+    --avatarUploadBg: #087a56;
+    --avatarUploadBgHover: #099668;
   }
 }
 
 html {
-  background: #11161e;
+  background: var(--bgPage);
 }
 
 body {
@@ -82,9 +223,8 @@ body {
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: 100vw 100vh;
-  color: var(--foreground);
   font-family: "Roboto", sans-serif;
-  color: white;
+  color: var(--colorWhite);
   font-size: 14px;
 }
 

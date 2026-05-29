@@ -13,7 +13,7 @@ function LevelCardBase({ progression }: { progression: Progression }) {
   const levelPercent = (progression.xpIntoCurrentLevel / levelRange) * 100;
 
   return (
-    <section className="flex w-full max-w-[864px] flex-col justify-between rounded-[10px] border border-[#2a2f3e] bg-[#1a1f2e] p-4">
+    <section className="flex w-full max-w-[864px] flex-col justify-between rounded-[10px] border border-(--borderColor) bg-(--bgSurface) p-4">
       <div className="flex flex-col justify-between gap-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -23,7 +23,7 @@ function LevelCardBase({ progression }: { progression: Progression }) {
               aria-hidden="true"
               className="h-4 w-4"
             />
-            <p className="text-[14px] font-bold text-white">
+            <p className="text-[14px] font-bold text-(--colorWhite)">
               Level {progression.level}
             </p>
           </div>

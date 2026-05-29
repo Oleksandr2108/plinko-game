@@ -64,7 +64,7 @@ function SettingsToggle({
           )}
         </div>
         <div>
-          <h3 className="text-[16px] font-semibold text-white">{title}</h3>
+          <h3 className="text-[16px] font-semibold text-(--colorWhite)">{title}</h3>
           <p className="text-[14px] text-(--text)">{description}</p>
         </div>
       </div>
@@ -82,7 +82,7 @@ function SettingsToggle({
       >
         <span
           className={[
-            "absolute left-1 top-1 h-6 w-6 rounded-full bg-white transition-transform",
+            "absolute left-1 top-1 h-6 w-6 rounded-full bg-(--colorWhite) transition-transform",
             checked ? "translate-x-6" : "translate-x-0",
           ].join(" ")}
         />
@@ -111,17 +111,17 @@ export function BetPanelSettingsModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-[rgba(5,8,14,0.72)] px-4 pt-10">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-[var(--bgBackdrop)] px-4 pt-10">
       <button
         type="button"
         className="absolute inset-0  cursor-default"
         aria-label="Close settings"
         onClick={onClose}
       />
-      <div className="relative z-10 m-auto w-full max-w-155 rounded-2xl border border-(--borderColor) bg-[rgba(26,31,46,0.98)] px-7 py-8 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+      <div className="relative z-10 m-auto w-full max-w-155 rounded-2xl border border-(--borderColor) bg-[var(--bgSurfaceModal)] px-7 py-8 shadow-[var(--shadowModal)]">
         <div className="mb-8 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-[30px] font-bold text-white">Settings</h2>
+            <h2 className="text-[30px] font-bold text-(--colorWhite)">Settings</h2>
             <p className="mt-2 text-[16px] text-(--text)">
               Customize your gaming experience
             </p>
@@ -129,7 +129,7 @@ export function BetPanelSettingsModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-[28px] leading-none text-(--secondaryText) transition-colors hover:text-white cursor-pointer"
+            className="text-[28px] leading-none text-(--secondaryText) transition-colors hover:text-(--colorWhite) cursor-pointer"
             aria-label="Close settings"
           >
             ×

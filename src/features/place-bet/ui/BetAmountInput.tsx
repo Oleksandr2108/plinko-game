@@ -27,7 +27,7 @@ export function BetAmountInput() {
           onChange={(event) => setAmount(Number(event.target.value))}
           className="w-full  bg-(--bgTabActive) text-[14px] text-(--inputText) outline-none rounded-xl px-10 py-2.5  border border-(--borderTab) "
         />
-        <span className="absolute left-2 top-1/2 transform -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-(--colorAccess) text-sm font-bold text-white">
+        <span className="absolute left-2 top-1/2 transform -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-(--colorAccess) text-sm font-bold text-(--colorWhite)">
           +
         </span>
       </div>

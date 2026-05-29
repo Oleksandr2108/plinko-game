@@ -19,7 +19,7 @@ export function Button({
     <button
       type={type}
       className={[
-        "w-full cursor-pointer rounded-xl px-4 py-3 text-lg font-semibold text-white disabled:opacity-60",
+        "w-full cursor-pointer rounded-xl px-4 py-3 text-lg font-semibold text-(--colorWhite) disabled:opacity-60",
         className,
       ]
         .filter(Boolean)

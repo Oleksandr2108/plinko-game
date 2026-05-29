@@ -14,7 +14,7 @@ function MissionSectionBase({
 }) {
   return (
     <section className="w-full max-w-[864px] space-y-3">
-      <h2 className="flex items-center gap-2 text-[14px] font-bold text-white">
+      <h2 className="flex items-center gap-2 text-[14px] font-bold text-(--colorWhite)">
         <Image
           src={icon}
           alt=""
@@ -31,7 +31,7 @@ function MissionSectionBase({
           />
         ))
       ) : (
-        <p className="rounded-[10px] border border-(--borderColor) bg-[rgba(30,36,56,0.55)] px-4 py-4 text-[14px] text-(--text)">
+        <p className="rounded-[10px] border border-(--borderColor) bg-[var(--bgSurfaceMuted)] px-4 py-4 text-[14px] text-(--text)">
           No missions available.
         </p>
       )}

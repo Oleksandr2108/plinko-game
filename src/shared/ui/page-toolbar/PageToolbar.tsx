@@ -4,7 +4,7 @@ import BackArrowIcon from "../../../../public/icons/backArrowsItem.svg";
 
 export function PageToolbar({ title }: { title: string }) {
   return (
-    <div className="flex h-14 items-center border-b border-(--borderColor) bg-[rgba(26,31,46,0.95)] px-4">
+    <div className="flex h-14 items-center border-b border-(--borderColor) bg-[var(--bgSurfaceToolbar)] px-4">
       <div className="mx-auto flex h-full w-full max-w-4xl items-center gap-4">
         <Link
           href="/"
@@ -18,7 +18,7 @@ export function PageToolbar({ title }: { title: string }) {
             className="h-5 w-5"
           />
         </Link>
-        <h1 className="truncate text-[18px] font-bold leading-7 text-white">
+        <h1 className="truncate text-[18px] font-bold leading-7 text-(--colorWhite)">
           {title}
         </h1>
       </div>

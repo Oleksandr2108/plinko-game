@@ -30,15 +30,15 @@ function MissionCardBase({ mission }: { mission: ProgressionMission }) {
   });
 
   const buttonStatusClass = isClaimed
-    ? "border-[var(--colorError)] bg-[var(--bgError)] text-[var(--colorError)] hover:bg-[rgba(251,44,54,0.35)]"
+    ? "border-[var(--colorError)] bg-[var(--bgError)] text-[var(--colorError)] hover:bg-[var(--bgErrorHover)]"
     : canClaim
-      ? "border-[var(--colorAccess)] bg-[var(--bgAccess)] text-[var(--colorAccess)] hover:bg-[rgba(0,201,80,0.35)] cursor-pointer"
-      : "border-[var(--colorMedium)] bg-[var(--bgMedium)] text-[var(--colorMedium)] hover:bg-[rgba(240,177,0,0.35)]";
+      ? "border-[var(--colorAccess)] bg-[var(--bgAccess)] text-[var(--colorAccess)] hover:bg-[var(--bgAccessHover)] cursor-pointer"
+      : "border-[var(--colorMedium)] bg-[var(--bgMedium)] text-[var(--colorMedium)] hover:bg-[var(--bgMediumHover)]";
 
   return (
-    <article className="w-full max-w-[864px] rounded-[10px] border border-[rgba(43,127,255,0.3)] bg-[linear-gradient(135deg,rgba(17,35,62,0.9),rgba(22,43,74,0.72))] p-4">
+    <article className="w-full max-w-[864px] rounded-[10px] border border-[var(--missionCardBorder)] [background:var(--missionCardBg)] p-4">
       <div className="flex gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border border-[rgba(43,127,255,0.35)] bg-[rgba(43,127,255,0.16)]">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border border-[var(--missionIconBorder)] bg-[var(--missionIconBg)]">
           <Image
             src={DailyMissionItemIcon}
             alt=""
@@ -50,7 +50,7 @@ function MissionCardBase({ mission }: { mission: ProgressionMission }) {
         <div className="min-w-0 flex-1">
           <div className="mb-2 flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="truncate text-[14px] font-bold text-white">
+              <p className="truncate text-[14px] font-bold text-(--colorWhite)">
                 {mission.title}
               </p>
               <p className=" truncate text-[12px] text-(--text)">
@@ -79,7 +79,7 @@ function MissionCardBase({ mission }: { mission: ProgressionMission }) {
                 />
                 {formatCredits(mission.creditReward)}
               </span>
-              <span className="text-[#5aa7ff] font-medium">
+              <span className="text-(--colorXpMuted) font-medium">
                 +{mission.xpReward} XP
               </span>
             </div>

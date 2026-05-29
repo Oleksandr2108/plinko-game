@@ -31,7 +31,7 @@ function Field({
         step={step}
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="w-full rounded-lg border border-(--borderColor) bg-(--inputBg) px-4 py-2 text-white outline-none"
+        className="w-full rounded-lg border border-(--borderColor) bg-(--inputBg) px-4 py-2 text-(--colorWhite) outline-none"
       />
     </label>
   );
@@ -104,15 +104,14 @@ export function AutoBetForm({
           onClick={() => onStop?.()}
           className="w-full"
           style={{
-            boxShadow:
-              "0 4px 6px -4px rgba(0, 0, 0, 0.1), 0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-            background: "linear-gradient(90deg, #fb2c36 0%, #e7000b 100%)",
+            boxShadow: "var(--shadowButtonStop)",
+            background: "var(--buttonStopBg)",
             fontWeight: 700,
             fontSize: 18,
             lineHeight: "156%",
             letterSpacing: "-0.02em",
             textAlign: "center",
-            color: "#fff",
+            color: "var(--colorWhite)",
           }}
         >
           {`Stop (${completedBets}/${numberOfBets})`}

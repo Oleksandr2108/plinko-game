@@ -16,7 +16,7 @@ export function PegField({
             cx={pin.x}
             cy={pin.y}
             r={radius}
-            fill="#8b95a7"
+            fill="var(--colorPeg)"
             opacity="0.9"
           />
         )),

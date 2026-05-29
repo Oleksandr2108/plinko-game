@@ -37,10 +37,10 @@ export function Header() {
             <span className="absolute left-0 top-1/2 h-0.5 w-5 -translate-y-1/2 bg-current" />
           </span>
         </button>
-        <h1 className="shrink-0 text-[20px] font-bold text-white sm:text-[24px]">
+        <h1 className="shrink-0 text-[20px] font-bold text-(--colorWhite) sm:text-[24px]">
           Plinko
         </h1>
-        <div className="flex min-w-0 items-center gap-1.5 rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] px-2.5 py-1.5 sm:gap-2 sm:px-4 sm:py-2">
+        <div className="flex min-w-0 items-center gap-1.5 rounded-[10px] border border-(--borderColor) bg-(--bgSurface) px-2.5 py-1.5 sm:gap-2 sm:px-4 sm:py-2">
           <Image
             src={BetIcon}
             alt="Bet Icon"
@@ -59,7 +59,7 @@ export function Header() {
         type="button"
         onClick={handleLogout}
         aria-label="Logout"
-        className="flex h-[30px] w-[34px] shrink-0 items-center justify-center rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] md:hidden"
+        className="flex h-[30px] w-[34px] shrink-0 items-center justify-center rounded-[10px] border border-(--borderColor) bg-(--bgSurface) md:hidden"
       >
         <Image
           src={LogoutIcon}

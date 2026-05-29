@@ -51,7 +51,7 @@ function DailyRewardCardBase({ progression }: { progression: Progression }) {
   const streakDays = Math.max(1, daily.streak);
 
   return (
-    <section className="w-full max-w-[864px] rounded-[10px] border border-[#66351d] bg-[radial-gradient(circle_at_top_right,rgba(251,44,54,0.16),transparent_34%),linear-gradient(135deg,rgba(38,31,28,0.96),rgba(31,20,26,0.92))] p-4">
+    <section className="w-full max-w-[864px] rounded-[10px] border border-[var(--dailyRewardBorder)] [background:var(--dailyRewardBg)] p-4">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div className="flex items-start gap-2">
           <div>
@@ -62,7 +62,7 @@ function DailyRewardCardBase({ progression }: { progression: Progression }) {
                 aria-hidden="true"
                 className="h-5 w-5"
               />
-              <p className="text-[16px] font-bold leading-tight text-white">
+              <p className="text-[16px] font-bold leading-tight text-(--colorWhite)">
                 Daily Reward
               </p>
             </div>
@@ -73,7 +73,7 @@ function DailyRewardCardBase({ progression }: { progression: Progression }) {
         </div>
 
         <div className="text-right text-[14px] font-semibold">
-          <p className="inline-flex items-center gap-1 text-[#ffd21e]">
+          <p className="inline-flex items-center gap-1 text-(--dailyRewardCredits)">
             <Image
               src={BetIcon}
               alt=""
@@ -82,7 +82,7 @@ function DailyRewardCardBase({ progression }: { progression: Progression }) {
             />
             {formatCredits(daily.reward.credits)}
           </p>
-          <p className="mt-1 text-[#51a2ff]">+{daily.reward.xp} XP</p>
+          <p className="mt-1 text-(--colorXp)">+{daily.reward.xp} XP</p>
         </div>
       </div>
       {daily.canClaim ? (
@@ -93,12 +93,12 @@ function DailyRewardCardBase({ progression }: { progression: Progression }) {
             claimMutation.mutate();
           }}
           disabled={claimMutation.isPending}
-          className="w-full rounded-[10px] bg-[linear-gradient(90deg,#ff6900_0%,#ff2d3f_100%)] px-4 py-3.5 text-[16px] font-bold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-55"
+          className="w-full rounded-[10px] [background:var(--dailyRewardButtonBg)] px-4 py-3.5 text-[16px] font-bold text-(--colorWhite) transition-opacity disabled:cursor-not-allowed disabled:opacity-55"
         >
           {claimMutation.isPending ? "Claiming..." : "Claim Now"}
         </button>
       ) : (
-        <div className="flex w-full items-center justify-center gap-2 rounded-[10px] bg-[rgba(42,47,62,0.72)] px-4 py-3.5 text-[16px] font-medium text-(--text)">
+        <div className="flex w-full items-center justify-center gap-2 rounded-[10px] bg-[var(--dailyRewardMutedBg)] px-4 py-3.5 text-[16px] font-medium text-(--text)">
           <Image
             src={DailyRewardTime}
             alt=""
@@ -108,9 +108,9 @@ function DailyRewardCardBase({ progression }: { progression: Progression }) {
           {formatAvailability(daily.nextClaimAt)}
         </div>
       )}
-      <div className="mt-4 flex items-center justify-between border-t border-[#66351d]/60 pt-4 text-[14px] text-(--text)">
+      <div className="mt-4 flex items-center justify-between border-t border-[var(--dailyRewardBorder)] pt-4 text-[14px] text-(--text)">
         <span>Current streak</span>
-        <span className="inline-flex items-center gap-1 text-[#ff8904]">
+        <span className="inline-flex items-center gap-1 text-(--dailyRewardStreak)">
           <Image
             src={DailyRewardStreakIcon}
             alt=""

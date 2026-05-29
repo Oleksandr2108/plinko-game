@@ -15,7 +15,7 @@ export function BetHistoryFilters({
   onRowsChange: (value: string) => void;
 }) {
   return (
-    <section className="rounded-[10px] border border-(--borderColor) bg-[rgba(30,36,56,0.55)] px-4 py-3">
+    <section className="rounded-[10px] border border-(--borderColor) bg-[var(--bgSurfaceMuted)] px-4 py-3">
       <div className="grid grid-cols-2 gap-3 text-xs text-(--secondaryText) sm:flex sm:flex-wrap sm:items-center">
         <div className="col-span-2 flex items-center gap-2 sm:col-span-1">
           <Image
@@ -32,7 +32,7 @@ export function BetHistoryFilters({
             onChange={(event) =>
               onRiskChange(event.target.value as "ALL" | ApiRiskLevel)
             }
-            className="h-9 w-full rounded-md border border-(--borderColor) bg-(--bgTab) px-2 text-[12px] text-white outline-none sm:h-auto sm:w-auto sm:py-1 sm:text-[11px]"
+            className="h-9 w-full rounded-md border border-(--borderColor) bg-(--bgTab) px-2 text-[12px] text-(--colorWhite) outline-none sm:h-auto sm:w-auto sm:py-1 sm:text-[11px]"
           >
             <option value="ALL">All</option>
             <option value="LOW">Low</option>
@@ -45,7 +45,7 @@ export function BetHistoryFilters({
           <select
             value={rowsFilter}
             onChange={(event) => onRowsChange(event.target.value)}
-            className="h-9 w-full rounded-md border border-(--borderColor) bg-(--bgTab) px-2 text-[12px] text-white outline-none sm:h-auto sm:w-auto sm:py-1 sm:text-[11px]"
+            className="h-9 w-full rounded-md border border-(--borderColor) bg-(--bgTab) px-2 text-[12px] text-(--colorWhite) outline-none sm:h-auto sm:w-auto sm:py-1 sm:text-[11px]"
           >
             <option value="ALL">All</option>
             {Array.from({ length: 9 }, (_, index) => 8 + index).map((rows) => (

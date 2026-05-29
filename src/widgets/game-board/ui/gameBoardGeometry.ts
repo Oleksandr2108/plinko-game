@@ -97,9 +97,9 @@ export const getSlotTone = (value: number): SlotTone => {
 
   if (value >= 2) {
     return {
-      stroke: "#f0b100",
+      stroke: "var(--colorMedium)",
       fill: "var(--bgMedium)",
-      text: "#f0b100",
+      text: "var(--colorMedium)",
     };
   }
 

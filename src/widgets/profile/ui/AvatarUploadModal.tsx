@@ -100,11 +100,11 @@ function AvatarUploadDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-      <section className="w-full max-w-[476px] rounded-[8px] border border-(--borderColor) bg-[#1a1f2e] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bgBackdropStrong)] px-4">
+      <section className="w-full max-w-[476px] rounded-[8px] border border-(--borderColor) bg-(--bgSurface) p-6 shadow-[var(--shadowModal)]">
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-[20px] font-bold text-white">Upload Avatar</h2>
+            <h2 className="text-[20px] font-bold text-(--colorWhite)">Upload Avatar</h2>
             <p className="mt-2 text-[12px] text-(--text)">
               Choose a profile picture (max 5MB)
             </p>
@@ -114,7 +114,7 @@ function AvatarUploadDialog({
             onClick={handleClose}
             disabled={isPending}
             aria-label="Close upload avatar modal"
-            className="text-[20px] leading-none text-(--text) transition-colors hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+            className="text-[20px] leading-none text-(--text) transition-colors hover:text-(--colorWhite) disabled:cursor-not-allowed disabled:opacity-60"
           >
             x
           </button>
@@ -125,7 +125,7 @@ function AvatarUploadDialog({
           onClick={() => inputRef.current?.click()}
           onDragOver={(event) => event.preventDefault()}
           onDrop={handleDrop}
-          className="flex min-h-[154px] w-full flex-col items-center justify-center rounded-[8px] border border-dashed border-[#34405a] bg-[#1b2132] px-4 py-6 text-center transition-colors hover:border-[#4a5877]"
+          className="flex min-h-[154px] w-full flex-col items-center justify-center rounded-[8px] border border-dashed border-[var(--avatarDropBorder)] bg-[var(--avatarDropBg)] px-4 py-6 text-center transition-colors hover:border-[var(--avatarDropBorderHover)]"
         >
           <span
             aria-hidden="true"
@@ -160,7 +160,7 @@ function AvatarUploadDialog({
             type="button"
             onClick={handleClose}
             disabled={isPending}
-            className="rounded-[8px] bg-[#2a3144] px-4 py-3 text-[14px] font-medium text-(--secondaryText) transition-colors hover:bg-[#343c52] disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-[8px] bg-[var(--avatarCancelBg)] px-4 py-3 text-[14px] font-medium text-(--secondaryText) transition-colors hover:bg-[var(--avatarCancelBgHover)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             Cancel
           </button>
@@ -168,7 +168,7 @@ function AvatarUploadDialog({
             type="button"
             onClick={handleUpload}
             disabled={!selectedFile || isPending}
-            className="rounded-[8px] bg-[#087a56] px-4 py-3 text-[14px] font-medium text-(--secondaryText) transition-colors hover:bg-[#099668] disabled:cursor-not-allowed disabled:opacity-55"
+            className="rounded-[8px] bg-[var(--avatarUploadBg)] px-4 py-3 text-[14px] font-medium text-(--secondaryText) transition-colors hover:bg-[var(--avatarUploadBgHover)] disabled:cursor-not-allowed disabled:opacity-55"
           >
             {isPending ? "Uploading..." : "Upload"}
           </button>

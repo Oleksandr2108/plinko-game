@@ -75,8 +75,8 @@ const LoginForm = (props: LoginData) => {
         className="m-auto w-16 h-16 rounded-full flex items-center justify-center"
         style={{ background: "var(--buttonBg)" }}
       >
-        <div className="w-7.5 h-7.5 rounded-full  border-[2.66667px] border-white flex items-center justify-center ">
-          <div className="w-2 h-2 bg-white rounded-full "></div>
+        <div className="w-7.5 h-7.5 rounded-full  border-[2.66667px] border-(--colorWhite) flex items-center justify-center ">
+          <div className="w-2 h-2 bg-(--colorWhite) rounded-full "></div>
         </div>
       </div>
 
@@ -147,7 +147,7 @@ const LoginForm = (props: LoginData) => {
         <button
           type="submit"
           disabled={props.isPending}
-          className="bg-(--buttonBg) text-white text-[14px] font-medium rounded-lg w-full py-3 mt-4 cursor-pointer"
+          className="bg-(--buttonBg) text-(--colorWhite) text-[14px] font-medium rounded-lg w-full py-3 mt-4 cursor-pointer"
           style={{ background: "var(--buttonBg)" }}
         >
           {props.isPending ? "Please wait..." : props.btnText}

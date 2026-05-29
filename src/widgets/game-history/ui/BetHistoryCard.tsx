@@ -20,7 +20,7 @@ const numberFormatter = new Intl.NumberFormat("en-US", {
 
 const riskToneMap: Record<ApiRiskLevel, string> = {
   LOW: " bg-(--bgAccess) text-(--colorAccess)",
-  MEDIUM: " bg-(--bgMedium) text-[#f0b100]",
+  MEDIUM: " bg-(--bgMedium) text-(--colorMedium)",
   HIGH: " bg-(--bgError) text-(--colorError)",
 };
 
@@ -30,7 +30,7 @@ export function BetHistoryCard({ bet }: { bet: Bet }) {
     profit >= 0 ? "text-(--colorAccess)" : "text-(--colorError)";
 
   return (
-    <article className="rounded-[10px] border border-(--borderColor) bg-[rgba(30,36,56,0.55)] px-3 py-3">
+    <article className="rounded-[10px] border border-(--borderColor) bg-[var(--bgSurfaceMuted)] px-3 py-3">
       <div className="grid grid-cols-2 gap-3 text-[12px] text-(--text) md:grid-cols-[1.6fr_1.4fr_0.8fr_0.8fr_0.8fr_0.8fr_1fr] md:items-center">
         <div className="col-span-2 md:col-span-1">
           <p className="mb-1 text-[12px] text-(--colorSmallText)">Time</p>

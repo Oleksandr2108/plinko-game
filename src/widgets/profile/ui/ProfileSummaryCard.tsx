@@ -9,6 +9,7 @@ import { PLINKO_QUERY_KEYS, plinkoApi } from "@/shared/api/plinko";
 import AddAvatarIcon from "../../../../public/icons/profile_avatarIcon.svg";
 import ProgressIcon from "../../../../public/icons/progress_Level.svg";
 import { AvatarUploadModal } from "./AvatarUploadModal";
+import BetIcon from "../../../../public/icons/betIcon.svg";
 
 import EditIcon from "../../../../public/icons/profile_edidIcon.svg";
 import LevelIcon from "../../../../public/icons/profile_levelIcon.svg";
@@ -81,13 +82,13 @@ export function ProfileSummaryCard({ user }: { user: User }) {
 
   return (
     <>
-      <section className="rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] p-4">
+      <section className="rounded-[10px] border border-(--borderColor) bg-(--bgSurface) p-4">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex min-w-0 items-center gap-4">
             <button
               type="button"
               onClick={() => setIsAvatarModalOpen(true)}
-              className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-(--colorAccess) text-[28px] font-bold text-white transition hover:brightness-110"
+              className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-(--colorAccess) text-[28px] font-bold text-(--colorWhite) transition hover:brightness-110"
               aria-label="Upload avatar"
             >
               {user.avatarUrl ? (
@@ -101,7 +102,7 @@ export function ProfileSummaryCard({ user }: { user: User }) {
               ) : (
                 (user.nickname?.[0]?.toUpperCase() ?? "U")
               )}
-              <span className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#1a1f2e] bg-(--colorAccess)">
+              <span className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full border-2 border-(--bgSurface) bg-(--colorAccess)">
                 <Image
                   src={AddAvatarIcon}
                   alt=""
@@ -117,13 +118,13 @@ export function ProfileSummaryCard({ user }: { user: User }) {
                   <input
                     value={editedNickname}
                     onChange={(event) => setEditedNickname(event.target.value)}
-                    className="min-w-0 rounded-[8px] border border-(--borderColor) bg-[#11161e] px-3 py-2 text-[14px] text-white outline-none focus:border-(--colorAccess)"
+                    className="min-w-0 rounded-[8px] border border-(--borderColor) bg-(--bgPage) px-3 py-2 text-[14px] text-(--colorWhite) outline-none focus:border-(--colorAccess)"
                   />
                   <button
                     type="button"
                     onClick={handleSaveNickname}
                     disabled={updateProfileMutation.isPending}
-                    className="rounded-[8px] bg-(--colorAccess) px-3 py-2 text-[12px] font-bold text-white disabled:opacity-60"
+                    className="rounded-[8px] bg-(--colorAccess) px-3 py-2 text-[12px] font-bold text-(--colorWhite) disabled:opacity-60"
                   >
                     Save
                   </button>
@@ -140,7 +141,7 @@ export function ProfileSummaryCard({ user }: { user: User }) {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <h2 className="truncate text-[20px] font-bold text-white">
+                  <h2 className="truncate text-[20px] font-bold text-(--colorWhite)">
                     {user.nickname}
                   </h2>
                   <button
@@ -191,7 +192,7 @@ export function ProfileSummaryCard({ user }: { user: User }) {
             <p className="text-[12px] text-(--colorSmallText)">Balance</p>
             <p className="mt-1 inline-flex items-center gap-1 text-[20px] font-bold text-(--colorAccess)">
               <Image
-                src={AddAvatarIcon}
+                src={BetIcon}
                 alt=""
                 aria-hidden="true"
                 className="h-4 w-4"
@@ -203,7 +204,7 @@ export function ProfileSummaryCard({ user }: { user: User }) {
 
         <div className="mt-6">
           <div className="mb-2 flex items-center justify-between gap-4">
-            <p className="inline-flex items-center gap-1 text-[12px] font-bold text-white">
+            <p className="inline-flex items-center gap-1 text-[12px] font-bold text-(--colorWhite)">
               <Image
                 src={ProgressIcon}
                 alt=""
@@ -217,9 +218,9 @@ export function ProfileSummaryCard({ user }: { user: User }) {
               {xpFormatter.format(levelRange)} XP
             </p>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-[#0d1118]">
+          <div className="h-2 overflow-hidden rounded-full bg-(--bgTrack)">
             <div
-              className="h-full rounded-full bg-[linear-gradient(90deg,#2b7fff_0%,#ad46ff_100%)] transition-[width]"
+              className="h-full rounded-full [background:var(--progressGradient)] transition-[width]"
               style={{ width: `${progressPercent}%` }}
             />
           </div>

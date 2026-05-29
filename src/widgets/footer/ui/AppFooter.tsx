@@ -45,7 +45,7 @@ export function AppFooter({
   return (
     <footer
       className={[
-        "w-full border-t border-(--borderColor) bg-[#1a1f2e] px-1 pb-[max(env(safe-area-inset-bottom),8px)] sm:px-2",
+        "w-full border-t border-(--borderColor) bg-(--bgSurface) px-1 pb-[max(env(safe-area-inset-bottom),8px)] sm:px-2",
         className,
       ]
         .filter(Boolean)

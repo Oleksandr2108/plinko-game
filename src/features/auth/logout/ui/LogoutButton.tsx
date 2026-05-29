@@ -18,7 +18,7 @@ export function LogoutButton({ className }: { className?: string }) {
       type="button"
       onClick={handleLogout}
       className={[
-        "flex items-center gap-2 rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] px-4 py-3 text-[16px] font-medium text-(--secondaryText) transition-colors hover:bg-(--bgTabActive) cursor-pointer",
+        "flex items-center gap-2 rounded-[10px] border border-(--borderColor) bg-(--bgSurface) px-4 py-3 text-[16px] font-medium text-(--secondaryText) transition-colors hover:bg-(--bgTabActive) cursor-pointer",
         className,
       ]
         .filter(Boolean)

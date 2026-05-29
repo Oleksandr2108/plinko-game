@@ -83,7 +83,7 @@ export function BetPanel({ className }: { className?: string }) {
   return (
     <aside
       className={[
-        "relative z-10 flex w-full max-w-82 shrink-0 flex-col items-center justify-between border-r border-(--borderColor) bg-[rgba(26,31,46,0.92)] px-4 pt-4 shadow-[0_18px_40px_rgba(0,0,0,0.35)]",
+        "relative z-10 flex w-full max-w-82 shrink-0 flex-col items-center justify-between border-r border-(--borderColor) bg-[var(--bgSurfacePanel)] px-4 pt-4 shadow-[var(--shadowPanel)]",
         className,
       ]
         .filter(Boolean)
@@ -134,7 +134,7 @@ export function MobileBetPanel() {
         />
         <aside
           className={[
-            "pointer-events-auto absolute bottom-[65px] left-0 top-0 flex w-[min(319px,calc(100vw-46px))] flex-col border-r border-(--borderColor) bg-[#1a1f2e] shadow-[18px_0_55px_rgba(0,0,0,0.42)] transition-transform duration-300 ease-out will-change-transform",
+            "pointer-events-auto absolute bottom-[65px] left-0 top-0 flex w-[min(319px,calc(100vw-46px))] flex-col border-r border-(--borderColor) bg-(--bgSurface) shadow-[var(--shadowPanelWide)] transition-transform duration-300 ease-out will-change-transform",
             isOpen ? "translate-x-0" : "-translate-x-full",
           ].join(" ")}
         >
@@ -143,7 +143,7 @@ export function MobileBetPanel() {
             onClick={() => setIsOpen(false)}
             aria-label="Close bet panel"
             tabIndex={isOpen ? 0 : -1}
-            className="absolute right-[-16px] top-4 z-10 flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#2a2f3e] text-[20px] leading-none text-(--secondaryText)"
+            className="absolute right-[-16px] top-4 z-10 flex h-8 w-8 items-center justify-center rounded-[10px] bg-(--bgControl) text-[20px] leading-none text-(--secondaryText)"
           >
             x
           </button>
@@ -202,7 +202,7 @@ function MobileBetDock({
   return (
     <section
       className={[
-        "mx-4 mb-4 shrink-0 rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] p-[13px] shadow-[0_25px_25px_rgba(0,0,0,0.25)] md:hidden",
+        "mx-4 mb-4 shrink-0 rounded-[10px] border border-(--borderColor) bg-(--bgSurface) p-[13px] shadow-[var(--shadowPanelSoft)] md:hidden",
         isHidden ? "pointer-events-none invisible" : "visible",
       ].join(" ")}
     >
@@ -211,7 +211,7 @@ function MobileBetDock({
           type="button"
           onClick={onOpen}
           aria-label="Open bet panel"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-[#2a2f3e]"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-(--bgControl)"
         >
           <Image
             src={IconSettings}
@@ -228,13 +228,13 @@ function MobileBetDock({
         type="button"
         onClick={handlePrimaryClick}
         disabled={mode === "manual" && isManualBetDisabled}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] text-[16px] font-bold text-white shadow-[0_10px_15px_rgba(0,0,0,0.1)] disabled:cursor-not-allowed disabled:opacity-60"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] text-[16px] font-bold text-(--colorWhite) shadow-[var(--shadowButton)] disabled:cursor-not-allowed disabled:opacity-60"
         style={{
           background: "var(--buttonBg)",
         }}
       >
         {isPending ? (
-          <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white/70" />
+          <span className="h-4 w-4 rounded-full border-2 border-[var(--spinnerBorder)] border-t-[var(--spinnerBorderActive)]" />
         ) : null}
         {isPending ? "Playing..." : mode === "auto" ? "Start Auto" : "Bet"}
       </button>

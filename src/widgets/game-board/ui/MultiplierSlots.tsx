@@ -57,7 +57,7 @@ export function MultiplierSlots({
                 width={slotWidth + 4}
                 height={slotHeight + 4}
                 fill="none"
-                stroke="rgba(255,255,255,0.28)"
+                stroke="var(--colorSlotStroke)"
                 strokeWidth="1"
               />
             ) : null}

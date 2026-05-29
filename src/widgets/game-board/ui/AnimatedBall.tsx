@@ -169,8 +169,8 @@ export function AnimatedBall({
       cx={activeFrame.x}
       cy={activeFrame.y}
       r="6"
-      fill="#f8fafc"
-      className="drop-shadow-[0_0_12px_rgba(255,255,255,0.65)]"
+      fill="var(--colorBall)"
+      className="drop-shadow-[var(--shadowBallGlow)]"
       style={{
         transition: enabled
           ? `cx ${BALL_STEP_MS}ms linear, cy ${BALL_STEP_MS}ms linear`

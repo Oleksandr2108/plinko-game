@@ -20,11 +20,11 @@ export function ProfilePage() {
     <main className="min-h-full ">
       <div className="mx-auto flex w-[calc(100%-32px)] max-w-[864px] flex-col gap-4 py-4">
         {isLoading ? (
-          <p className="rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] p-4 text-[14px] text-(--text)">
+          <p className="rounded-[10px] border border-(--borderColor) bg-(--bgSurface) p-4 text-[14px] text-(--text)">
             Loading profile...
           </p>
         ) : error ? (
-          <p className="rounded-[10px] border border-(--borderColor) bg-[#301b29] p-4 text-[14px] text-(--colorError)">
+          <p className="rounded-[10px] border border-(--borderColor) bg-(--bgErrorSurface) p-4 text-[14px] text-(--colorError)">
             Failed to load profile. Please try again.
           </p>
         ) : user ? (
@@ -42,7 +42,7 @@ export function ProfilePage() {
             </div>
           </>
         ) : (
-          <p className="rounded-[10px] border border-(--borderColor) bg-[#1a1f2e] p-4 text-[14px] text-(--text)">
+          <p className="rounded-[10px] border border-(--borderColor) bg-(--bgSurface) p-4 text-[14px] text-(--text)">
             No profile data available.
           </p>
         )}

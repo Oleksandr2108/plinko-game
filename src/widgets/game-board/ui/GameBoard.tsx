@@ -89,7 +89,7 @@ export function GameBoard() {
   const hasVisibleActiveDrop = visibleDrops.length > 0;
 
   return (
-    <section className="flex min-h-0 flex-1 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(30,38,56,0.45),rgba(15,20,25,0)_40%),rgba(17,22,30,0.94)] px-2 sm:px-6 lg:px-10">
+    <section className="flex min-h-0 flex-1 overflow-hidden [background:var(--bgGameBoard)] px-2 sm:px-6 lg:px-10">
       <div className="mx-auto flex w-full flex-1 flex-col justify-start overflow-hidden pt-0 sm:justify-center sm:pt-0">
         <div className="mx-auto w-full max-w-6xl">
           <div
