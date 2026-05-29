@@ -9,10 +9,13 @@ interface PendingDropResult {
 
 interface DropBallState {
   isDropping: boolean;
+  reservedBetAmount: number;
   activeDrops: PendingDropResult[];
   history: Ball[];
   settledSlotIndex: number | null;
   setIsDropping: (v: boolean) => void;
+  reserveBetAmount: (amount: number) => boolean;
+  releaseReservedBetAmount: (amount: number) => void;
   enqueueResult: (ball: Ball) => void;
   enqueueResults: (results: Ball[]) => void;
   completeActiveDrop: (ballId: string) => void;
@@ -20,10 +23,39 @@ interface DropBallState {
 
 export const useDropBallStore = create<DropBallState>((set, get) => ({
   isDropping: false,
+  reservedBetAmount: 0,
   activeDrops: [],
   history: [],
   settledSlotIndex: null,
   setIsDropping: (isDropping) => set({ isDropping }),
+  reserveBetAmount: (amount) => {
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return false;
+    }
+
+    const currentUser = useUserStore.getState().user;
+    const availableBalance = (currentUser?.balance ?? 0) - get().reservedBetAmount;
+
+    if (availableBalance < amount) {
+      return false;
+    }
+
+    set((state) => ({
+      reservedBetAmount: state.reservedBetAmount + amount,
+      isDropping: true,
+    }));
+
+    return true;
+  },
+  releaseReservedBetAmount: (amount) =>
+    set((state) => {
+      const reservedBetAmount = Math.max(0, state.reservedBetAmount - amount);
+
+      return {
+        reservedBetAmount,
+        isDropping: state.activeDrops.length > 0 || reservedBetAmount > 0,
+      };
+    }),
   enqueueResult: (ball) =>
     set((state) => ({
       activeDrops: [
@@ -68,13 +100,20 @@ export const useDropBallStore = create<DropBallState>((set, get) => ({
     }
 
     set((state) => {
+      const reservedBetAmount = Math.max(
+        0,
+        state.reservedBetAmount - activeDrop.ball.betAmount,
+      );
+      const activeDrops = state.activeDrops.filter(
+        (drop) => drop.ball.id !== ballId,
+      );
+
       return {
-        activeDrops: state.activeDrops.filter(
-          (drop) => drop.ball.id !== ballId,
-        ),
+        activeDrops,
+        reservedBetAmount,
         history: [activeDrop.ball, ...state.history].slice(0, 50),
         settledSlotIndex: activeDrop.ball.slotIndex,
-        isDropping: state.activeDrops.some((drop) => drop.ball.id !== ballId),
+        isDropping: activeDrops.length > 0 || reservedBetAmount > 0,
       };
     });
   },

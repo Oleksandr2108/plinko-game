@@ -26,6 +26,7 @@ function BetPanelContent({ showFooter = true }: { showFooter?: boolean }) {
     errorMessage,
     gameConfig,
     isLoading,
+    isManualBetDisabled,
     isAutoSubmitting,
     isManualSubmitting,
     placeManualBet,
@@ -69,6 +70,7 @@ function BetPanelContent({ showFooter = true }: { showFooter?: boolean }) {
           <DropBallButton
             onClick={placeManualBet}
             isPending={isManualSubmitting}
+            disabled={isManualBetDisabled}
           />
         )}
       </div>
@@ -171,6 +173,7 @@ function MobileBetDock({
   );
   const {
     isAutoSubmitting,
+    isManualBetDisabled,
     isManualSubmitting,
     placeManualBet,
     startAutoBet,
@@ -186,6 +189,10 @@ function MobileBetDock({
       }
 
       void startAutoBet();
+      return;
+    }
+
+    if (isManualBetDisabled) {
       return;
     }
 
@@ -220,7 +227,8 @@ function MobileBetDock({
       <button
         type="button"
         onClick={handlePrimaryClick}
-        className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] text-[16px] font-bold text-white shadow-[0_10px_15px_rgba(0,0,0,0.1)]"
+        disabled={mode === "manual" && isManualBetDisabled}
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] text-[16px] font-bold text-white shadow-[0_10px_15px_rgba(0,0,0,0.1)] disabled:cursor-not-allowed disabled:opacity-60"
         style={{
           background: "var(--buttonBg)",
         }}

@@ -7,9 +7,11 @@ import { Button } from "@/shared/ui";
 export function DropBallButton({
   onClick,
   isPending,
+  disabled,
 }: {
   onClick?: () => void | Promise<void>;
   isPending?: boolean;
+  disabled?: boolean;
 }) {
   const soundEnabled = useGameSettingsStore((state) => state.soundEnabled);
 
@@ -26,7 +28,7 @@ export function DropBallButton({
   return (
     <Button
       onClick={handleClick}
-      disabled={isPending}
+      disabled={disabled}
     >
       {isPending ? "Submitting..." : "Bet"}
     </Button>

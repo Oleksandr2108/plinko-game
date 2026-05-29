@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useShallow } from "zustand/react/shallow";
 import type { Bet } from "@/entities/bet";
 import { useUserStore } from "@/entities/user";
 import { useAutoBetStore } from "@/features/auto-bet";
@@ -30,6 +31,7 @@ interface UseBetPanelResult {
     : never;
   isLoading: boolean;
   isManualSubmitting: boolean;
+  isManualBetDisabled: boolean;
   isAutoSubmitting: boolean;
   errorMessage: string | undefined;
   placeManualBet: () => Promise<void>;
@@ -40,7 +42,13 @@ interface UseBetPanelResult {
 export function useBetPanel(): UseBetPanelResult {
   const queryClient = useQueryClient();
   const setUser = useUserStore((state) => state.setUser);
-  const isDropping = useDropBallStore((state) => state.isDropping);
+  const user = useUserStore((state) => state.user);
+  const amount = usePlaceBetStore((state) => state.amount);
+  const [isDropping, reservedBetAmount] = useDropBallStore(
+    useShallow((state) => [state.isDropping, state.reservedBetAmount]),
+  );
+  const availableBalance = (user?.balance ?? 0) - reservedBetAmount;
+  const isManualBetDisabled = availableBalance < amount;
 
   const gameConfigQuery = useQuery({
     queryKey: PLINKO_QUERY_KEYS.gameConfig,
@@ -98,15 +106,12 @@ export function useBetPanel(): UseBetPanelResult {
   };
 
   const manualBetMutation = useMutation({
-    mutationFn: async () => {
-      useDropBallStore.getState().setIsDropping(true);
-      return plinkoApi.placeBet(buildBetInput());
-    },
+    mutationFn: plinkoApi.placeBet,
     onSuccess: (bet) => {
       applyBetResult(bet);
     },
-    onError: () => {
-      useDropBallStore.getState().setIsDropping(false);
+    onError: (_error, input) => {
+      useDropBallStore.getState().releaseReservedBetAmount(input.amount);
     },
     onSettled: async () => {
       await finalizeBetFlow();
@@ -204,11 +209,21 @@ export function useBetPanel(): UseBetPanelResult {
       gameConfigQuery.isLoading ||
       currentUserQuery.isLoading ||
       activeSeedQuery.isLoading,
-    isManualSubmitting: manualBetMutation.isPending,
+    isManualSubmitting: false,
+    isManualBetDisabled,
     isAutoSubmitting: autoBetMutation.isPending,
     errorMessage,
     placeManualBet: async () => {
-      await manualBetMutation.mutateAsync();
+      const input = buildBetInput();
+      const didReserveBetAmount = useDropBallStore
+        .getState()
+        .reserveBetAmount(input.amount);
+
+      if (!didReserveBetAmount) {
+        return;
+      }
+
+      await manualBetMutation.mutateAsync(input);
     },
     startAutoBet: async () => {
       await autoBetMutation.mutateAsync();
