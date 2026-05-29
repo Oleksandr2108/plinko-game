@@ -1,0 +1,48 @@
+"use client";
+
+import { useShallow } from "zustand/react/shallow";
+import { GAME_CONFIG } from "@/shared/config";
+import { useSelectRiskStore } from "../model/store";
+
+export function RowsSlider({
+  minRows = GAME_CONFIG.rows.min,
+  maxRows = GAME_CONFIG.rows.max,
+  disabled = false,
+}: {
+  minRows?: number;
+  maxRows?: number;
+  disabled?: boolean;
+}) {
+  const [rows, setRows] = useSelectRiskStore(
+    useShallow((state) => [state.rows, state.setRows]),
+  );
+  const progress =
+    maxRows === minRows ? 100 : ((rows - minRows) / (maxRows - minRows)) * 100;
+
+  return (
+    <div className="space-y-3  ">
+      <div className="flex items-center justify-between">
+        <p className="font-medium text-(--secondaryText) text-[14px]">Rows</p>
+        <span className="flex h-7.5 w-10 items-center justify-center rounded-[10px] border border-(--borderColor) bg-(--bgTab) font-bold text-(--colorAccess)">
+          {rows}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={minRows}
+        max={maxRows}
+        value={rows}
+        disabled={disabled}
+        onChange={(event) => setRows(Number(event.target.value))}
+        className="plinko-range h-5 w-full appearance-none bg-transparent disabled:cursor-not-allowed disabled:opacity-60"
+        style={{
+          ["--range-progress" as string]: `${progress}%`,
+        }}
+      />
+      <div className="flex justify-between text-sm text-(--text)">
+        <span>{minRows}</span>
+        <span>{maxRows}</span>
+      </div>
+    </div>
+  );
+}
